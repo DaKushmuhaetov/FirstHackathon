@@ -4,14 +4,16 @@ using FirstHackathon.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirstHackathon.Migrations
 {
     [DbContext(typeof(FirstHackathonDbContext))]
-    partial class FirstHackathonDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200611230425_votes")]
+    partial class votes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
