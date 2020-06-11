@@ -19,7 +19,15 @@ namespace FirstHackathon.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get list of votings
+        /// </summary>
+        /// <param name="houseId">House id</param>
+        /// <param name="onlyOpened">Returns only active votings</param>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
         [HttpGet("/houses/{houseId}/votings")]
+        [ProducesResponseType(typeof(Page<VotingListItem>), 200)]
         public async Task<ActionResult<Page<VotingListItem>>> GetVotings(
             CancellationToken cancellationToken,
             [FromRoute] Guid houseId,
