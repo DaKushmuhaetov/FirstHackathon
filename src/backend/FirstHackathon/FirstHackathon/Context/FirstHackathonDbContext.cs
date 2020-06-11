@@ -47,6 +47,11 @@ namespace FirstHackathon.Context
                 builder.Property(o => o.Address)
                     .IsRequired();
 
+                builder.Property(o => o.Login)
+                    .IsRequired(true);
+                builder.Property(o => o.Password)
+                     .IsRequired(true);
+
                 builder.HasMany(o => o.People)
                     .WithOne(p => p.House)
                     .IsRequired(false);
