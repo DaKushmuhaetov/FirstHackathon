@@ -86,7 +86,10 @@ namespace FirstHackathon.Controllers
             CancellationToken cancellationToken,
             [FromBody] AuthenticationBinding binding)
         {
-            var person = await _context.People.SingleOrDefaultAsync(o => o.Login == binding.Login && o.Password == binding.Password, cancellationToken);
+            var person = await _context.People
+                .Include(o => o.House)
+                .SingleOrDefaultAsync(o => o.Login == binding.Login && o.Password == binding.Password, cancellationToken);
+
             if (person != null)
             {
                 var token = await _jwt.Create(person, cancellationToken);

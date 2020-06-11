@@ -2,7 +2,9 @@
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
 using FirstHackathon.Models;
+using FirstHackathon.Models.Authentication;
 using FirstHackathon.Views;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,10 +19,12 @@ namespace FirstHackathon.Controllers
     {
         private readonly IHouseRepository _houseRepository;
         private readonly FirstHackathonDbContext _context;
-        public HousesController(IHouseRepository houseRepository, FirstHackathonDbContext context)
+        private readonly IJwtAccessTokenFactory _jwt;
+        public HousesController(IHouseRepository houseRepository, FirstHackathonDbContext context, IJwtAccessTokenFactory jwt)
         {
             _houseRepository = houseRepository;
             _context = context;
+            _jwt = jwt;
         }
 
         /// <summary>
@@ -88,6 +92,32 @@ namespace FirstHackathon.Controllers
                 Total = await query.CountAsync(),
                 Items = items
             };
+        }
+
+        /// <summary>
+        /// House authentication by login and password
+        /// </summary>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
+        /// <response code="401">Invalid authorization code</response>
+        [AllowAnonymous]
+        [HttpPost("house/login")]
+        [ProducesResponseType(typeof(TokenView), 200)]
+        [ProducesResponseType(401)]
+        public async Task<ActionResult<TokenView>> Authentication(
+            CancellationToken cancellationToken,
+            [FromBody] AuthenticationBinding binding)
+        {
+            var house = await _context.Houses.SingleOrDefaultAsync(o => o.Login == binding.Login && o.Password == binding.Password, cancellationToken);
+            if (house != null)
+            {
+                var token = await _jwt.Create(house, cancellationToken);
+                return new TokenView { AccessToken = token.Value };
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace FirstHackathon.Models.Authentication
 {
-    public sealed class JwtAuthOptions
+    public sealed class JwtAuthHouseOptions
     {
         public string Issuer { get; set; }
 

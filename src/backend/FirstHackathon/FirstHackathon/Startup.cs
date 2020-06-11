@@ -98,7 +98,8 @@ namespace FirstHackathon
             });
 
             services.AddScoped<IJwtAccessTokenFactory, JwtAccessTokenFactory>();
-            services.Configure<JwtAuthOptions>(Configuration.GetSection("Auth:PersonJwt"));
+            services.Configure<JwtAuthPersonOptions>(Configuration.GetSection("Auth:PersonJwt"));
+            services.Configure<JwtAuthHouseOptions>(Configuration.GetSection("Auth:AdminJwt"));
 
             #endregion
 
