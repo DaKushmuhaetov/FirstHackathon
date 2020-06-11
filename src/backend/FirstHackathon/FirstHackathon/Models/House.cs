@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FirstHackathon.Models.Votes;
+using System;
 using System.Collections.Generic;
 
 namespace FirstHackathon.Models
@@ -12,6 +13,7 @@ namespace FirstHackathon.Models
         public string Password { get; }
 
         public List<Person> People { get; }
+        public List<Voting> Votings { get; } = new List<Voting>();
 
         private House() { }
         public House(Guid id, string address, string login, string password, List<Person> people = null)

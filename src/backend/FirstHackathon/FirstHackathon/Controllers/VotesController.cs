@@ -1,11 +1,9 @@
 ﻿using FirstHackathon.Bindings;
 using FirstHackathon.Context;
-using FirstHackathon.Models.Votes;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,21 +22,26 @@ namespace FirstHackathon.Controllers
         [HttpGet("/houses/{houseId}/votings")]
         public async Task<ActionResult<Page<VotingListItem>>> GetVotings(
             CancellationToken cancellationToken,
-            [FromQuery]VotingsBinding binding
+            [FromRoute] Guid houseId,
+            [FromQuery] VotingsBinding binding,
+            [FromQuery] bool onlyOpened = false
             )
         {
             var query = _context.Votings
                 .AsNoTracking()
                 .Include(o => o.Variants)
+                .Include(o => o.House)
+                .Where(o => o.House.Id == houseId)
                 .Select(o => new VotingListItem
                 {
                     Id = o.Id,
                     Title = o.Title,
+                    IsClosed = o.IsClosed,
                     Variants = o.Variants.Select(variant => new VariantView
                     {
                         Id = variant.Id,
                         Title = variant.Title,
-                        Votes = variant.Votes.Select(vote => new VoteView 
+                        Votes = variant.Votes.Select(vote => new VoteView
                         {
                             Id = vote.Id,
                             Person = new PersonView
@@ -55,6 +58,9 @@ namespace FirstHackathon.Controllers
                         }).ToList()
                     }).ToList()
                 });
+
+            if (onlyOpened)
+                query = query.Where(o => o.IsClosed == false);
 
             var items = await query
                 .Skip(binding.Offset)

@@ -82,6 +82,10 @@ namespace FirstHackathon.Context
                 builder.Property(o => o.Title)
                     .IsRequired();
 
+                builder.Property(o => o.IsClosed)
+                    .HasDefaultValue(false)
+                    .IsRequired();
+
                 builder.HasMany(o => o.Variants)
                     .WithOne(p => p.Voting)
                     .IsRequired(false);

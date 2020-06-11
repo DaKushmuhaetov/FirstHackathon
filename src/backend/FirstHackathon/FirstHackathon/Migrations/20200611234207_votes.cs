@@ -12,11 +12,19 @@ namespace FirstHackathon.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Title = table.Column<string>(nullable: false)
+                    Title = table.Column<string>(nullable: false),
+                    IsClosed = table.Column<bool>(nullable: false, defaultValue: false),
+                    HouseId = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Votings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Votings_Houses_HouseId",
+                        column: x => x.HouseId,
+                        principalTable: "Houses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,6 +84,11 @@ namespace FirstHackathon.Migrations
                 name: "IX_Votes_VariantId",
                 table: "Votes",
                 column: "VariantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Votings_HouseId",
+                table: "Votings",
+                column: "HouseId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

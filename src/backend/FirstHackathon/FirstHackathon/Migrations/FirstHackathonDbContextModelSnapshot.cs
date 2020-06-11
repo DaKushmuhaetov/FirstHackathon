@@ -112,11 +112,21 @@ namespace FirstHackathon.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("HouseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsClosed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("HouseId");
 
                     b.ToTable("Votings");
                 });
@@ -144,6 +154,13 @@ namespace FirstHackathon.Migrations
                     b.HasOne("FirstHackathon.Models.Votes.Variant", "Variant")
                         .WithMany("Votes")
                         .HasForeignKey("VariantId");
+                });
+
+            modelBuilder.Entity("FirstHackathon.Models.Votes.Voting", b =>
+                {
+                    b.HasOne("FirstHackathon.Models.House", null)
+                        .WithMany("Votings")
+                        .HasForeignKey("HouseId");
                 });
 #pragma warning restore 612, 618
         }

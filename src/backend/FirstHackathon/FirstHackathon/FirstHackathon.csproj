@@ -20,6 +20,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200611224639_votes.cs" />
     <Compile Remove="Migrations\20200611224639_votes.Designer.cs" />
+    <Compile Remove="Migrations\20200611230425_votes.cs" />
+    <Compile Remove="Migrations\20200611230425_votes.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
