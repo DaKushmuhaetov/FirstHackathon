@@ -2,8 +2,11 @@
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
 using FirstHackathon.Models;
+using FirstHackathon.Models.Authentication;
 using FirstHackathon.Views;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading;
@@ -17,13 +20,16 @@ namespace FirstHackathon.Controllers
         private readonly IPersonRepository _personRepository;
         private readonly IHouseRepository _houseRepository;
         private readonly FirstHackathonDbContext _context;
+        private readonly IJwtAccessTokenFactory _jwt;
         public PeopleController(IPersonRepository personRepository,
             IHouseRepository houseRepository,
-            FirstHackathonDbContext context)
+            FirstHackathonDbContext context,
+            IJwtAccessTokenFactory jwt)
         {
             _personRepository = personRepository;
             _houseRepository = houseRepository;
             _context = context;
+            _jwt = jwt;
         }
 
         /// <summary>
@@ -64,6 +70,32 @@ namespace FirstHackathon.Controllers
                     LivesHereCounter = house.People.Count()
                 }
             });
+        }
+
+        /// <summary>
+        /// Person authentication by login and password
+        /// </summary>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
+        /// <response code="401">Invalid authorization code</response>
+        [AllowAnonymous]
+        [HttpPost("person/login")]
+        [ProducesResponseType(typeof(TokenView), 200)]
+        [ProducesResponseType(401)]
+        public async Task<ActionResult<TokenView>> Authentication(
+            CancellationToken cancellationToken,
+            [FromBody] AuthenticationBinding binding)
+        {
+            var person = await _context.People.SingleOrDefaultAsync(o => o.Login == binding.Login && o.Password == binding.Password, cancellationToken);
+            if (person != null)
+            {
+                var token = await _jwt.Create(person, cancellationToken);
+                return new TokenView { AccessToken = token.Value };
+            }
+            else
+            {
+                return Unauthorized();
+            }
         }
     }
 }

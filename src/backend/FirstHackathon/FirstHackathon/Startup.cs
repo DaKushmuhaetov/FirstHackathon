@@ -2,6 +2,7 @@ using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
 using FirstHackathon.Extensions;
 using FirstHackathon.Middlewares;
+using FirstHackathon.Models.Authentication;
 using FirstHackathon.Models.Repository;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +68,7 @@ namespace FirstHackathon
                     ValidIssuer = Configuration["Auth:PersonJwt:Issuer"],
                     ValidateAudience = true,
                     ValidAudience = Configuration["Auth:PersonJwt:Audience"],
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     IssuerSigningKey =
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:PersonJwt:SecretKey"])),
                     ValidateIssuerSigningKey = true,
@@ -81,7 +82,7 @@ namespace FirstHackathon
                     ValidIssuer = Configuration["Auth:AdminJwt:Issuer"],
                     ValidateAudience = true,
                     ValidAudience = Configuration["Auth:AdminJwt:Audience"],
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:AdminJwt:SecretKey"])),
                     ValidateIssuerSigningKey = true,
                 };
@@ -95,6 +96,9 @@ namespace FirstHackathon
                 var adminPolicy = new AuthorizationPolicyBuilder("admin").RequireAuthenticatedUser();
                 o.AddPolicy("admin", adminPolicy.Build());
             });
+
+            services.AddScoped<IJwtAccessTokenFactory, JwtAccessTokenFactory>();
+            services.Configure<JwtAuthOptions>(Configuration.GetSection("Auth:PersonJwt"));
 
             #endregion
 
