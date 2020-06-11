@@ -15,8 +15,10 @@ namespace FirstHackathon.Models
         public House House { get; }
 
         private Person() { }
-        public Person(string name, string surname, string login, string password, Guid houseId)
+        public Person(Guid id, string name, string surname, string login, string password, Guid houseId)
         {
+            Id = id;
+
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Surname = surname ?? throw new ArgumentNullException(nameof(surname));
 

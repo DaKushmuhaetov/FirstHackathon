@@ -33,12 +33,6 @@ namespace FirstHackathon.Context
                     .IsRequired(true);
                 builder.Property(o => o.Password)
                      .IsRequired(true);
-
-                builder.HasOne(o => o.House)
-                    .WithMany()
-                    .HasForeignKey(_ => _.HouseId)
-                    .HasPrincipalKey(_ => _.People)
-                    .IsRequired(true);
             });
 
             modelBuilder.Entity<House>(builder =>
@@ -52,6 +46,10 @@ namespace FirstHackathon.Context
 
                 builder.Property(o => o.Address)
                     .IsRequired();
+
+                builder.HasMany(o => o.People)
+                    .WithOne(p => p.House)
+                    .IsRequired(false);
             });
         }
     }
