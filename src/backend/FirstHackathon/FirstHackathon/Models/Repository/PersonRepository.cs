@@ -20,12 +20,17 @@ namespace FirstHackathon.Models.Repository
             return await _context.People.SingleOrDefaultAsync(w => w.Id == id, cancellationToken);
         }
 
-        public async Task Save(Person person)
+        public async Task<Person> GetByLogin(string login, CancellationToken cancellationToken)
+        {
+            return await _context.People.SingleOrDefaultAsync(w => w.Login == login, cancellationToken);
+        }
+
+        public async Task Save(Person person, CancellationToken cancellationToken)
         {
             if (_context.Entry(person).State == EntityState.Detached)
                 _context.People.Add(person);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 }

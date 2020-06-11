@@ -4,7 +4,6 @@ using FirstHackathon.Context.Repository;
 using FirstHackathon.Models;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -29,19 +28,32 @@ namespace FirstHackathon.Controllers
         /// </summary>
         /// <param name="address">House address</param>
         /// <response code="200">Successfully</response>
+        /// <response code="400">Address must be filled</response>
+        /// <response code="409">House already exists</response>
         [HttpPost("/houses/create")]
-        [ProducesResponseType(typeof(House), 200)]
-        public async Task<ActionResult<House>> Create(
+        [ProducesResponseType(typeof(HouseView), 200)]
+        public async Task<ActionResult<HouseView>> Create(
             CancellationToken cancellationToken,
             [FromQuery] string address,
             [FromBody] CreateHouseBinding binding
             )
         {
+            if (String.IsNullOrEmpty(address))
+                return BadRequest(address);
+
+            if (await _houseRepository.GetByAddress(address, cancellationToken) != null)
+                return Conflict(address);
+
             var house = new House(Guid.NewGuid(), address, binding.Login, binding.Password);
 
-            await _houseRepository.Save(house);
+            await _houseRepository.Save(house, cancellationToken);
 
-            return Ok(house);
+            return Ok(new HouseView
+            {
+                Id = house.Id,
+                Address = house.Address,
+                LivesHereCounter = house.People.Count()
+            });
         }
 
         /// <summary>
@@ -53,13 +65,15 @@ namespace FirstHackathon.Controllers
         [ProducesResponseType(typeof(Page<HouseListItem>), 200)]
         public async Task<Page<HouseListItem>> GetHouses(
             CancellationToken cancellationToken,
-            [FromQuery]GetHouseListBinding binding)
+            [FromQuery] GetHouseListBinding binding)
         {
             var query = _context.Houses
                 .AsNoTracking()
-                .Select(o => new HouseListItem { 
+                .Select(o => new HouseListItem
+                {
                     Id = o.Id,
-                    Address = o.Address
+                    Address = o.Address,
+                    LivesHereCounter = o.People.Count()
                 });
 
             var items = await query

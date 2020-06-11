@@ -2,7 +2,7 @@
 
 namespace FirstHackathon.Views
 {
-    public sealed class HouseListItem
+    public sealed class HouseView
     {
         public Guid Id { get; set; }
         public string Address { get; set; }

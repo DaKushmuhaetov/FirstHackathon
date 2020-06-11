@@ -8,6 +8,7 @@ namespace FirstHackathon.Context.Repository
     public interface IHouseRepository
     {
         Task<House> Get(Guid id, CancellationToken cancellationToken);
-        Task Save(House house);
+        Task<House> GetByAddress(string address, CancellationToken cancellationToken);
+        Task Save(House house, CancellationToken cancellationToken);
     }
 }

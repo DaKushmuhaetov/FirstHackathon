@@ -8,6 +8,7 @@ namespace FirstHackathon.Context.Repository
     public interface IPersonRepository
     {
         Task<Person> Get(Guid id, CancellationToken cancellationToken);
-        Task Save(Person person);
+        Task<Person> GetByLogin(string login, CancellationToken cancellationToken);
+        Task Save(Person person, CancellationToken cancellationToken);
     }
 }

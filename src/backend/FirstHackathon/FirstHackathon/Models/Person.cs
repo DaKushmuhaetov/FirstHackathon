@@ -10,12 +10,10 @@ namespace FirstHackathon.Models
 
         public string Login { get; }
         public string Password { get; private set; }
-
-        public Guid HouseId { get; }
         public House House { get; }
 
         private Person() { }
-        public Person(Guid id, string name, string surname, string login, string password, Guid houseId)
+        public Person(Guid id, string name, string surname, string login, string password, House house)
         {
             Id = id;
 
@@ -25,7 +23,7 @@ namespace FirstHackathon.Models
             Login = login ?? throw new ArgumentNullException(nameof(login));
             Password = password ?? throw new ArgumentNullException(nameof(password));
 
-            HouseId = houseId;
+            House = house;
         }
 
         public void SetPassword(string newPassword)
