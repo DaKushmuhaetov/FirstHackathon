@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FirstHackathon.Models
 {
@@ -11,6 +12,7 @@ namespace FirstHackathon.Models
         public string Login { get; }
         public string Password { get; private set; }
         public House House { get; }
+        public List<Meeting> Meetings { get; }
 
         private Person() { }
         public Person(Guid id, string name, string surname, string login, string password, House house)
