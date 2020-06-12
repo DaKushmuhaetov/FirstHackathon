@@ -2,6 +2,8 @@
 using FirstHackathon.Context.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,11 +30,12 @@ namespace FirstHackathon.Models.Repository
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<Meeting> GetByHouseId(Guid houseId, CancellationToken cancellationToken)
+        public async Task<List<Meeting>> GetByHouseId(Guid houseId, CancellationToken cancellationToken)
         {
             return await _context.Meetings
                 .Include(o => o.House)
-                .SingleOrDefaultAsync(w => w.House.Id == houseId, cancellationToken);
+                .Where(w => w.House.Id == houseId)
+                .ToListAsync(cancellationToken);
         }
     }
 }
