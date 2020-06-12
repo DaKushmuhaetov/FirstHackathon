@@ -14,7 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Net;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -70,7 +69,6 @@ namespace FirstHackathon
                     ValidateAudience = true,
                     ValidAudience = Configuration["Auth:PersonJwt:Audience"],
                     ValidateLifetime = false,
-                    LifetimeValidator = LifetimeValidator,
                     IssuerSigningKey =
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Auth:PersonJwt:SecretKey"])),
                     ValidateIssuerSigningKey = true,
@@ -137,15 +135,6 @@ namespace FirstHackathon
             app.UseMvc();
 
             app.UseRewriter(new RewriteOptions().AddRedirect(@"^$", "swagger", (int)HttpStatusCode.Redirect));
-        }
-
-        public bool LifetimeValidator(DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters)
-        {
-            if (expires != null)
-            {
-                return expires < DateTime.UtcNow;
-            }
-            return false;
         }
     }
 }
