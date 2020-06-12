@@ -1,0 +1,138 @@
+[33mcommit d8995bc9455490f828ec99807ea2859ed0792d0e[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 18:35:48 2020 +0500
+
+    Add vote method
+
+[33mcommit fb4ecc2f213884fb6801eeb22a6de9b4c1b02a9c[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 15:41:56 2020 +0500
+
+    Add token to PersonCreate
+
+[33mcommit f060cdc56afb934cc3627c40fc848c89cbba2020[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 15:23:12 2020 +0500
+
+    Fix votes controller
+
+[33mcommit e8f21df285cd8c9073238a4b8cd929adf29afc20[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 14:36:53 2020 +0500
+
+    Refactoring
+
+[33mcommit 3f2c37583de56ab4fb7d365a2502665e3e9bd022[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 14:35:37 2020 +0500
+
+    Add meetings list
+
+[33mcommit 4a7ba9518b9df47ec75749cfd7e78ae7156c5422[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 13:36:20 2020 +0500
+
+    Fix conflict
+
+[33mcommit d6ff0bcb7bfbaab104fd7689d2c86cd4a62150f1[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 13:20:52 2020 +0500
+
+    Code refactoring
+
+[33mcommit 411e4218a1558d7b2b54bfe88e267ef9c5b158c9[m
+Merge: b612a79 d8ee866
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 13:17:24 2020 +0500
+
+    Fix conflicts
+
+[33mcommit d8ee866fbf39f92de66fe17fb6a4f5df20909f77[m
+Author: DaKushmuhaetov <dank.9001@gmail.com>
+Date:   Fri Jun 12 07:01:54 2020 +0500
+
+    Add meetings
+
+[33mcommit b612a79f61730c1134011dca124841893f868c1a[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 05:37:41 2020 +0500
+
+    Register service for IVotingRepository
+
+[33mcommit 88ef9590c0742a63f5d4309c07ababe9d1ec2762[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 05:33:42 2020 +0500
+
+    Fix auth scheme
+
+[33mcommit ec05b7565d456ae19e62a7e9faf703f6a0a59a66[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 05:22:56 2020 +0500
+
+    Add create voting method (without jwt)
+
+[33mcommit faee0534ff65a093bb869d63e95904701b1e71cb[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 04:48:11 2020 +0500
+
+    Refactoring
+
+[33mcommit 1e0257c896f08dcb0f1b531ddbaa891bb5471d31[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 04:42:29 2020 +0500
+
+    Fix filter
+
+[33mcommit 28474675d6a782c87db6db8f3143f811cf85d6d6[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 04:28:37 2020 +0500
+
+    Add votings list
+
+[33mcommit 510ddd61e42543e1f703c2611a1e204d69da1b9c[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 01:14:00 2020 +0500
+
+    Fix migrations
+
+[33mcommit 9a4a783224cb38fa73957152152ff0effe991f5f[m
+Author: DaKushmuhaetov <dank.9001@gmail.com>
+Date:   Fri Jun 12 00:58:25 2020 +0500
+
+    Athorization
+
+[33mcommit 2b9aa6115796a23faa011cefc11317cb0ef3417e[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Fri Jun 12 00:09:23 2020 +0500
+
+    Add authentication for person
+
+[33mcommit ce9169257905daeb39333db46bfb5eb92336e32c[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Thu Jun 11 23:31:18 2020 +0500
+
+    Refactoring
+
+[33mcommit 64b6dbf04661933be5b0e0f760812832d14c1933[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Thu Jun 11 22:05:58 2020 +0500
+
+    Add create and get house methods
+
+[33mcommit 60d1af39c2db5608c7201f7e2551676f71ae04e0[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Thu Jun 11 21:33:53 2020 +0500
+
+    Init backend
+
+[33mcommit 4ea070cae39f346127da5343b46f88909dec0a6d[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Thu Jun 11 20:00:37 2020 +0500
+
+    Init file structure
+
+[33mcommit 2577fb9b3ad9d87c5af70803059bd5845107ca54[m
+Author: ekleziast <rami1@mail.ru>
+Date:   Thu Jun 11 19:57:33 2020 +0500
+
+    init

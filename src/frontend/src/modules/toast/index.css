@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap');
+
+.toast-box {
+    position: absolute;
+    top: 49px;
+    right: 71px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    z-index: 10000;
+}
+
+.toast-message {
+    margin-bottom: 15px;
+  
+    max-width: 450px;
+    
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+  
+    color: #fff;
+    padding: 15px 25px;
+  
+    border-radius: 10px;
+  
+    background-color: #8BC34A;
+
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.25);
+  
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.toast-icon {
+    margin-right: 20px;
+
+    width: 15px;
+    height: 15px;
+
+    border-radius: 50%;
+
+    background-color: #fff;
+}
+
+@media (max-width: 1460px) {
+    .toast-box {
+        top: 29px;
+        right: 40px;
+    }
+    
+    .toast-message {
+        margin-bottom: 10px;
+      
+        max-width: 400px;
+        
+        font-family: 'Montserrat';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+      
+        padding: 10px 20px;
+    }
+    
+    .toast-icon {
+        margin-right: 28px;
+    
+        width: 10px;
+        height: 10px;
+    }
+}
