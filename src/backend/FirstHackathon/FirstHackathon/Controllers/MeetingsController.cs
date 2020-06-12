@@ -3,7 +3,6 @@ using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
 using FirstHackathon.Extensions;
 using FirstHackathon.Models;
-using FirstHackathon.Models.Authentication;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,7 @@ namespace FirstHackathon.Controllers
         private readonly FirstHackathonDbContext _context;
 
         public MeetingsController(
-            IMeetingRepository meetingRepository, 
+            IMeetingRepository meetingRepository,
             IHouseRepository houseRepository,
             FirstHackathonDbContext context
             )
@@ -102,7 +101,7 @@ namespace FirstHackathon.Controllers
                 });
 
             if (binding.StartDate != null)
-                query = query.Where(o => o.MeetingDate >= binding.StartDate); 
+                query = query.Where(o => o.MeetingDate >= binding.StartDate);
             if (binding.EndDate != null)
                 query = query.Where(o => o.MeetingDate <= binding.EndDate);
 
