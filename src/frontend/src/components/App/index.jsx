@@ -27,10 +27,16 @@ class App extends React.PureComponent {
         new Toast(text, color, ms)
     }
 
+    handlePushTo = (path) => {
+        const {history} = this.props
+        history.push(path)
+    }
+
     render() {
         return (
             <Context.Provider value={{
-                handleToast: this.handleToast
+                handleToast: this.handleToast,
+                handlePushTo: this.handlePushTo
             }}>
                 <div ref={this.toastBox} id="toast-box"/>
                 <main ref={this.main}>

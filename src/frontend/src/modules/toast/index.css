@@ -2,8 +2,8 @@
 
 .toast-box {
     position: absolute;
-    top: 49px;
-    right: 71px;
+    top: 29px;
+    right: 40px;
 
     display: flex;
     flex-direction: column;
@@ -13,17 +13,19 @@
 }
 
 .toast-message {
-    margin-bottom: 15px;
-  
-    max-width: 450px;
+    margin-bottom: 10px;
+      
+    max-width: 400px;
     
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 500;
-    font-size: 20px;
+    font-size: 16px;
+    
+    padding: 10px 20px;
   
     color: #fff;
-    padding: 15px 25px;
+    padding: 10px 20px;
   
     border-radius: 10px;
   
@@ -38,38 +40,11 @@
 
 .toast-icon {
     margin-right: 20px;
-
-    width: 15px;
-    height: 15px;
+    
+    width: 10px;
+    height: 10px;
 
     border-radius: 50%;
 
     background-color: #fff;
-}
-
-@media (max-width: 1460px) {
-    .toast-box {
-        top: 29px;
-        right: 40px;
-    }
-    
-    .toast-message {
-        margin-bottom: 10px;
-      
-        max-width: 400px;
-        
-        font-family: 'Montserrat';
-        font-style: normal;
-        font-weight: 500;
-        font-size: 16px;
-      
-        padding: 10px 20px;
-    }
-    
-    .toast-icon {
-        margin-right: 28px;
-    
-        width: 10px;
-        height: 10px;
-    }
 }
