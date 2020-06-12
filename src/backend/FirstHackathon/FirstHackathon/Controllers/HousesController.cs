@@ -1,6 +1,7 @@
 ﻿using FirstHackathon.Bindings;
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
+using FirstHackathon.Extensions;
 using FirstHackathon.Models;
 using FirstHackathon.Models.Authentication;
 using FirstHackathon.Views;
@@ -126,6 +127,22 @@ namespace FirstHackathon.Controllers
             {
                 return Unauthorized();
             }
+        }
+
+        /// <summary>
+        /// Token validation for house
+        /// </summary>
+        /// <response code="200">Successfully</response>
+        /// <response code="401">Invalid authorization code</response>
+        [Authorize(AuthenticationSchemes = "admin")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [HttpPost("/house/token")]
+        public async Task<ActionResult> IsTokenValid(
+            CancellationToken cancellationToken)
+        {
+            var houseId = User.GetId();
+            return await _houseRepository.Get(houseId, cancellationToken) == null ? Unauthorized() : (ActionResult)NoContent();
         }
     }
 }
