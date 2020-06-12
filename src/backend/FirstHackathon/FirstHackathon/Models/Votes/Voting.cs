@@ -13,18 +13,17 @@ namespace FirstHackathon.Models.Votes
         /// <summary>
         /// Варианты ответов
         /// </summary>
-        public List<Variant> Variants { get; }
+        public List<Variant> Variants { get; } = new List<Variant>();
 
         public House House { get; }
 
         public bool IsClosed { get; private set; } = false;
 
         private Voting() { }
-        public Voting(Guid id, string title, List<Variant> variants, House house)
+        public Voting(Guid id, string title, House house)
         {
             Id = id;
             Title = title ?? throw new ArgumentNullException(nameof(title));
-            Variants = variants ?? throw new ArgumentNullException(nameof(variants));
             House = house ?? throw new ArgumentNullException(nameof(house));
         }
 

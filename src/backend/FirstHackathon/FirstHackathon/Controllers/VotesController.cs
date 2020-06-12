@@ -1,6 +1,10 @@
 ﻿using FirstHackathon.Bindings;
 using FirstHackathon.Context;
+using FirstHackathon.Context.Repository;
+using FirstHackathon.Models;
+using FirstHackathon.Models.Votes;
 using FirstHackathon.Views;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,9 +18,14 @@ namespace FirstHackathon.Controllers
     public class VotesController : ControllerBase
     {
         private readonly FirstHackathonDbContext _context;
-        public VotesController(FirstHackathonDbContext context)
+        private readonly IVotingRepository _votingRepository;
+        public VotesController(
+            FirstHackathonDbContext context,
+            IVotingRepository votingRepository
+            )
         {
             _context = context;
+            _votingRepository = votingRepository;
         }
 
         /// <summary>
@@ -82,6 +91,39 @@ namespace FirstHackathon.Controllers
                 Total = await query.CountAsync(),
                 Items = items
             };
+        }
+
+        /// <summary>
+        /// Create new voting
+        /// </summary>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
+        [HttpPost("/houses/{houseId}/votings")]
+        [ProducesResponseType(typeof(VotingView), 200)]
+        [Authorize(AuthenticationSchemes = "house")]
+        public async Task<ActionResult<VotingView>> Create(
+            CancellationToken cancellationToken,
+            [FromBody]CreateVotingBinding binding)
+        {
+            var voting = new Voting(Guid.NewGuid(), binding.Title, null); // TODO: jwt: get house by jwt
+
+            binding.Variants.ForEach(o => 
+            {
+                voting.AddVariant(new Variant(Guid.NewGuid(), o, voting));
+            });
+
+            await _votingRepository.Save(voting, cancellationToken);
+
+            return Ok(new VotingView 
+            {
+                Id = voting.Id,
+                Title = voting.Title,
+                Variants = voting.Variants.Select(o => new VariantView
+                {
+                    Id = o.Id,
+                    Title = o.Title
+                }).ToList()
+            });
         }
     }
 }
