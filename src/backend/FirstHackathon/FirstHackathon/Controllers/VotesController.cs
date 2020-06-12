@@ -2,17 +2,13 @@
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
 using FirstHackathon.Extensions;
-using FirstHackathon.Models;
 using FirstHackathon.Models.Votes;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -92,7 +88,8 @@ namespace FirstHackathon.Controllers
                 .Take(binding.Limit)
                 .ToListAsync();
 
-            items.ForEach(async o => {
+            items.ForEach(async o =>
+            {
                 o.IsVoted = await IsVoted(person.Id, o.Id);
             });
 
