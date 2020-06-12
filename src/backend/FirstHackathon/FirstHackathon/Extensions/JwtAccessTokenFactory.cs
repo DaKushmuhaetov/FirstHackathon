@@ -37,12 +37,12 @@ namespace FirstHackathon.Extensions
                     new Claim(ClaimTypes.Email, person.Login),
                 }, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType).Claims,
                 DateTime.UtcNow,
-                DateTime.UtcNow.AddMinutes(_authPersonOptions.LifeTimeMinutes),
+                DateTime.UtcNow.AddDays(1),
                 new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authPersonOptions.SecretKey)), SecurityAlgorithms.HmacSha256));
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
-            return Task.FromResult(new AccessToken(token, TimeSpan.FromMinutes(_authPersonOptions.LifeTimeMinutes)));
+            return Task.FromResult(new AccessToken(token, TimeSpan.FromDays(1)));
         }
 
         public Task<AccessToken> Create(House house, CancellationToken cancellationToken)
@@ -57,12 +57,12 @@ namespace FirstHackathon.Extensions
                     new Claim(ClaimTypes.Email, house.Login),
                 }, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType).Claims,
                 DateTime.UtcNow,
-                DateTime.UtcNow.AddMinutes(_authHouseOptions.LifeTimeMinutes),
+                DateTime.UtcNow.AddDays(1),
                 new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authHouseOptions.SecretKey)), SecurityAlgorithms.HmacSha256));
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
 
-            return Task.FromResult(new AccessToken(token, TimeSpan.FromMinutes(_authHouseOptions.LifeTimeMinutes)));
+            return Task.FromResult(new AccessToken(token, TimeSpan.FromDays(1)));
         }
     }
 }
