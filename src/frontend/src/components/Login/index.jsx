@@ -56,7 +56,9 @@ class Login extends React.PureComponent {
 
     state = {
         email: '',
-        password: ''
+        password: '',
+
+        invalidList: []
     }
 
     handleChange = (e) => {
@@ -68,19 +70,36 @@ class Login extends React.PureComponent {
         this.setState({ [name]: val })
     }
 
+    handleValidate = () => {
+        let invalidList = []
+
+        const withoutSymbols = /^([a-zа-яё]+|\d+)$/i
+
+        if (withoutSymbols.test(this.state.password) === false) {
+            invalidList.push('password')
+        }
+
+        const email = /\S+@\S+\.\S+/
+        if (email.test(this.state.email) === false) {
+            invalidList.push('email')
+        }
+
+        this.setState({ invalidList }, () => console.log(this.state.invalidList))
+
+        return invalidList.length > 0 ? invalidList : false
+    }
+
     handleAuth = (e) => {
         e.preventDefault()
 
-        if (this.state.email === '' || this.state.password === '') {
-            this.context.handleToast('Некорректный email или пароль', '#FF3333', 4000)
-            return
-        }
+        if (this.handleValidate() !== false) return
 
         console.log(this.state)
     }
 
     render() {
         const {classes} = this.props
+        const invalidList = this.state.invalidList
 
         return (
             <Container component="main" maxWidth="xs">
@@ -94,6 +113,8 @@ class Login extends React.PureComponent {
                     </Typography>
                     <form style={{ textAlign: 'center' }} className={classes.form} noValidate>
                         <TextField
+                            error={invalidList.includes('email')}
+
                             variant="outlined"
                             margin="normal"
                             required
@@ -108,6 +129,8 @@ class Login extends React.PureComponent {
                             value={this.state.email}
                         />
                         <TextField
+                            error={invalidList.includes('password')}
+
                             variant="outlined"
                             margin="normal"
                             required
