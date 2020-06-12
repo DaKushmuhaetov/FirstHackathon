@@ -4,14 +4,16 @@ using FirstHackathon.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FirstHackathon.Migrations
 {
     [DbContext(typeof(FirstHackathonDbContext))]
-    partial class FirstHackathonDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200612003141_Meeting")]
+    partial class Meeting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,14 +49,14 @@ namespace FirstHackathon.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<byte[]>("Body")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("HouseId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
 
                     b.Property<DateTime>("MeetingDate")
                         .HasColumnType("datetime2");
@@ -106,105 +108,21 @@ namespace FirstHackathon.Migrations
                     b.ToTable("People");
                 });
 
-            modelBuilder.Entity("FirstHackathon.Models.Votes.Variant", b =>
-            {
-                b.Property<Guid>("Id")
-                    .HasColumnType("uniqueidentifier");
-
-                b.Property<Guid?>("VotingId")
-                    .HasColumnType("uniqueidentifier");
-
-                b.HasKey("Id");
-
-                b.HasIndex("VotingId");
-
-                b.ToTable("Variants");
-            });
-
-            modelBuilder.Entity("FirstHackathon.Models.Votes.Vote", b =>
-            {
-                b.Property<Guid>("Id")
-                    .HasColumnType("uniqueidentifier");
-
-                b.Property<Guid?>("PersonId")
-                    .HasColumnType("uniqueidentifier");
-
-                b.Property<Guid?>("VariantId")
-                    .HasColumnType("uniqueidentifier");
-
-                b.HasKey("Id");
-
-                b.HasIndex("PersonId");
-
-                b.HasIndex("VariantId");
-
-                b.ToTable("Votes");
-            });
-
-            modelBuilder.Entity("FirstHackathon.Models.Votes.Voting", b =>
-            {
-                b.Property<Guid>("Id")
-                    .HasColumnType("uniqueidentifier");
-
-                b.Property<Guid?>("HouseId")
-                    .HasColumnType("uniqueidentifier");
-
-                b.Property<bool>("IsClosed")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("bit")
-                    .HasDefaultValue(false);
-
-                b.Property<string>("Title")
-                    .IsRequired()
-                    .HasColumnType("nvarchar(max)");
-
-                b.HasKey("Id");
-
-                b.HasIndex("HouseId");
-
-                b.ToTable("Votings");
-            });
-
             modelBuilder.Entity("FirstHackathon.Models.Meeting", b =>
-            {
-                b.HasOne("FirstHackathon.Models.House", "House")
-                    .WithMany("Meetings")
-                    .HasForeignKey("HouseId");
+                {
+                    b.HasOne("FirstHackathon.Models.House", "House")
+                        .WithMany("Meetings")
+                        .HasForeignKey("HouseId");
 
-                b.HasOne("FirstHackathon.Models.Person", null)
-                    .WithMany("Meetings")
-                    .HasForeignKey("PersonId");
-            });
+                    b.HasOne("FirstHackathon.Models.Person", null)
+                        .WithMany("Meetings")
+                        .HasForeignKey("PersonId");
+                });
 
             modelBuilder.Entity("FirstHackathon.Models.Person", b =>
                 {
                     b.HasOne("FirstHackathon.Models.House", "House")
                         .WithMany("People")
-                        .HasForeignKey("HouseId");
-                });
-
-            modelBuilder.Entity("FirstHackathon.Models.Votes.Variant", b =>
-                {
-                    b.HasOne("FirstHackathon.Models.Votes.Voting", "Voting")
-                        .WithMany("Variants")
-                        .HasForeignKey("VotingId");
-                });
-
-            modelBuilder.Entity("FirstHackathon.Models.Votes.Vote", b =>
-                {
-                    b.HasOne("FirstHackathon.Models.Person", "Person")
-                        .WithMany("Votes")
-                        .HasForeignKey("PersonId");
-
-                    b.HasOne("FirstHackathon.Models.Votes.Variant", "Variant")
-                        .WithMany("Votes")
-                        .HasForeignKey("VariantId");
-                });
-
-            modelBuilder.Entity("FirstHackathon.Models.Votes.Voting", b =>
-                {
-                    b.HasOne("FirstHackathon.Models.House", null)
-                        .WithMany("Votings")
                         .HasForeignKey("HouseId");
                 });
 #pragma warning restore 612, 618

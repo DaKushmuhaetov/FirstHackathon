@@ -14,6 +14,7 @@ namespace FirstHackathon.Models
 
         public List<Person> People { get; }
         public List<Voting> Votings { get; } = new List<Voting>();
+        public List<Meeting> Meetings { get; } = new List<Meeting>();
 
         private House() { }
         public House(Guid id, string address, string login, string password, List<Person> people = null)

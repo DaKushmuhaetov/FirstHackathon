@@ -13,6 +13,7 @@ namespace FirstHackathon.Context
 
         public DbSet<House> Houses { get; set; }
         public DbSet<Person> People { get; set; }
+        public DbSet<Meeting> Meetings { get; set; }
 
         #region Votes
 
@@ -67,6 +68,32 @@ namespace FirstHackathon.Context
 
                 builder.HasMany(o => o.People)
                     .WithOne(p => p.House)
+                    .IsRequired(false);
+
+                builder.HasMany(o => o.Meetings)
+                    .WithOne(p => p.House)
+                    .IsRequired(false);
+            });
+
+            modelBuilder.Entity<Meeting>(builder =>
+            {
+                builder.ToTable("Meetings");
+
+                builder.HasKey(o => o.Id);
+                builder.Property(o => o.Id)
+                    .ValueGeneratedNever()
+                    .IsRequired();
+
+                builder.Property(o => o.Title)
+                    .IsRequired(true);
+
+                builder.Property(o => o.MeetingDate)
+                    .IsRequired(true);
+
+                builder.Property(o => o.Description)
+                    .IsRequired(false);
+
+                builder.Property(o => o.Image)
                     .IsRequired(false);
             });
 
