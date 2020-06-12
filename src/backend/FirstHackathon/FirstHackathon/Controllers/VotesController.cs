@@ -1,6 +1,7 @@
 ﻿using FirstHackathon.Bindings;
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
+using FirstHackathon.Extensions;
 using FirstHackathon.Models.Votes;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Authorization;
@@ -16,13 +17,16 @@ namespace FirstHackathon.Controllers
     [ApiController]
     public class VotesController : ControllerBase
     {
+        private readonly IHouseRepository _houseRepository;
         private readonly FirstHackathonDbContext _context;
         private readonly IVotingRepository _votingRepository;
         public VotesController(
+            IHouseRepository houseRepository,
             FirstHackathonDbContext context,
             IVotingRepository votingRepository
             )
         {
+            _houseRepository = houseRepository;
             _context = context;
             _votingRepository = votingRepository;
         }
@@ -30,24 +34,25 @@ namespace FirstHackathon.Controllers
         /// <summary>
         /// Get list of votings
         /// </summary>
-        /// <param name="houseId">House id</param>
         /// <param name="onlyOpened">Returns only active votings</param>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
-        [HttpGet("/houses/{houseId}/votings")]
+        [Authorize(AuthenticationSchemes = "person")]
+        [HttpGet("/votings")]
         [ProducesResponseType(typeof(Page<VotingListItem>), 200)]
         public async Task<ActionResult<Page<VotingListItem>>> GetVotings(
             CancellationToken cancellationToken,
-            [FromRoute] Guid houseId,
             [FromQuery] VotingsBinding binding,
             [FromQuery] bool onlyOpened = false
             )
         {
+            var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
+
             var query = _context.Votings
                 .AsNoTracking()
                 .Include(o => o.Variants)
                 .Include(o => o.House)
-                .Where(o => o.House.Id == houseId)
+                .Where(o => o.House.Id == house.Id)
                 .Select(o => new VotingListItem
                 {
                     Id = o.Id,
@@ -97,14 +102,16 @@ namespace FirstHackathon.Controllers
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
-        [HttpPost("/houses/{houseId}/votings")]
+        [HttpPost("/votings")]
         [ProducesResponseType(typeof(VotingView), 200)]
         [Authorize(AuthenticationSchemes = "admin")]
         public async Task<ActionResult<VotingView>> Create(
             CancellationToken cancellationToken,
             [FromBody] CreateVotingBinding binding)
         {
-            var voting = new Voting(Guid.NewGuid(), binding.Title, null); // TODO: jwt: get house by jwt
+            var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
+
+            var voting = new Voting(Guid.NewGuid(), binding.Title, house);
 
             binding.Variants.ForEach(o =>
             {
