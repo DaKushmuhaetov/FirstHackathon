@@ -41,8 +41,8 @@ namespace FirstHackathon.Controllers
         /// <response code="404">House not found</response>
         /// <response code="409">Person with this login already exists</response>
         [HttpPost("/houses/{houseId}/add")]
-        [ProducesResponseType(typeof(PersonView), 200)]
-        public async Task<ActionResult<PersonView>> Create(
+        [ProducesResponseType(typeof(CreatePersonView), 200)]
+        public async Task<ActionResult<CreatePersonView>> Create(
             CancellationToken cancellationToken,
             [FromRoute] Guid houseId,
             [FromBody] CreatePersonBinding binding)
@@ -58,7 +58,9 @@ namespace FirstHackathon.Controllers
 
             await _personRepository.Save(person, cancellationToken);
 
-            return Ok(new PersonView
+            var token = await _jwt.Create(person, cancellationToken);
+
+            return Ok(new CreatePersonView
             {
                 Id = person.Id,
                 Name = person.Name,
@@ -68,7 +70,8 @@ namespace FirstHackathon.Controllers
                     Id = house.Id,
                     Address = house.Address,
                     LivesHereCounter = house.People.Count()
-                }
+                },
+                Token = new TokenView { AccessToken = token.Value }
             });
         }
 
