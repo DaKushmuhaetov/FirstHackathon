@@ -1,14 +1,21 @@
 // React
 import React from 'react'
 
+// Router
+import {withRouter} from 'react-router-dom'
+import Routers from '../../routes'
+
+// Styles
+import './index.css'
+
 class App extends React.PureComponent {
     render() {
         return (
-            <div>
-                Пизда
-            </div>
+            <main>
+                <Routers/>
+            </main>
         )
     }
 }
 
-export default App
+export default withRouter(App)
