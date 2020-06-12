@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 using FirstHackathon.Models.Votes;
 using System;
-=======
-﻿using System;
->>>>>>> d8ee866fbf39f92de66fe17fb6a4f5df20909f77
 using System.Collections.Generic;
 
 namespace FirstHackathon.Models
