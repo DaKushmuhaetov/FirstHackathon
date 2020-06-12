@@ -1,6 +1,6 @@
 export default class Http {
     constructor(url, method, body, headers) {
-        this.url = `http://localhost:3000/${url}` // your server url
+        this.url = `https://asp-firsthackathon.herokuapp.com${url}` // your server url
         this.method = method || 'GET'
         this.body = body || null
         this.headers = headers || { 'Content-Type': 'application/json' }

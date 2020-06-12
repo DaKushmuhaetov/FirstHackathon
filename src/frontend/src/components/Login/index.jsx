@@ -19,6 +19,9 @@ import HomeIcon from '@material-ui/icons/Home'
 // Context
 import {Context} from '../../context'
 
+// Modules
+import Http from '../../modules/http'
+
 // Styles
 import './index.css'
 
@@ -86,15 +89,27 @@ class Login extends React.PureComponent {
 
         this.setState({ invalidList }, () => console.log(this.state.invalidList))
 
-        return invalidList.length > 0 ? invalidList : false
+        return invalidList.length > 0 ? invalidList : true
     }
 
-    handleAuth = (e) => {
+    handleAuth = async (e) => {
         e.preventDefault()
 
-        if (this.handleValidate() !== false) return
+        if (this.handleValidate() !== true) return
 
-        console.log(this.state)
+        const data = JSON.stringify({
+            login: this.state.email,
+            password: this.state.password
+        })
+
+        let http = new Http(`/person/login`, 'POST', data, { 'Content-Type': 'application/json' })
+
+        const response = await http.request().catch(() => {
+            this.context.handleToast('Нет ответа от сервера: вход', '#DC143C', 5000)
+            return
+        })
+
+        console.log(response)
     }
 
     render() {
@@ -102,7 +117,7 @@ class Login extends React.PureComponent {
         const invalidList = this.state.invalidList
 
         return (
-            <Container component="main" maxWidth="xs">
+            <Container component="div" maxWidth="xs" className="auth">
                 <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
