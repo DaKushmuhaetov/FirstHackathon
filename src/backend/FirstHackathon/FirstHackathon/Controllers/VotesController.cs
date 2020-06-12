@@ -1,7 +1,6 @@
 ﻿using FirstHackathon.Bindings;
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
-using FirstHackathon.Models;
 using FirstHackathon.Models.Votes;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Authorization;
@@ -103,18 +102,18 @@ namespace FirstHackathon.Controllers
         [Authorize(AuthenticationSchemes = "admin")]
         public async Task<ActionResult<VotingView>> Create(
             CancellationToken cancellationToken,
-            [FromBody]CreateVotingBinding binding)
+            [FromBody] CreateVotingBinding binding)
         {
             var voting = new Voting(Guid.NewGuid(), binding.Title, null); // TODO: jwt: get house by jwt
 
-            binding.Variants.ForEach(o => 
+            binding.Variants.ForEach(o =>
             {
                 voting.AddVariant(new Variant(Guid.NewGuid(), o, voting));
             });
 
             await _votingRepository.Save(voting, cancellationToken);
 
-            return Ok(new VotingView 
+            return Ok(new VotingView
             {
                 Id = voting.Id,
                 Title = voting.Title,

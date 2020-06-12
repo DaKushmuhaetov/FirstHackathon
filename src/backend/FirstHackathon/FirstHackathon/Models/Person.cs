@@ -1,5 +1,5 @@
 <<<<<<< HEAD
-﻿using FirstHackathon.Models.Votes;
+using FirstHackathon.Models.Votes;
 using System;
 =======
 ﻿using System;

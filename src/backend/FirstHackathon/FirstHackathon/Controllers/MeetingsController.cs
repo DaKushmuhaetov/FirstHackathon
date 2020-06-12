@@ -18,15 +18,14 @@ namespace FirstHackathon.Controllers
     {
         private readonly IMeetingRepository _meetingRepository;
         private readonly IHouseRepository _houseRepository;
-        private readonly FirstHackathonDbContext _context;
-        private readonly IJwtAccessTokenFactory _jwt;
 
-        public MeetingsController(IMeetingRepository meetingRepository, IHouseRepository houseRepository, FirstHackathonDbContext context, IJwtAccessTokenFactory jwt)
+        public MeetingsController(
+            IMeetingRepository meetingRepository, 
+            IHouseRepository houseRepository
+            )
         {
             _meetingRepository = meetingRepository;
             _houseRepository = houseRepository;
-            _context = context;
-            _jwt = jwt;
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace FirstHackathon.Controllers
             )
         {
             var address = User.GetAddress();
-            House house = (await _houseRepository.GetByAddress(address, cancellationToken));
+            House house = await _houseRepository.GetByAddress(address, cancellationToken);
 
             await using var ms = new MemoryStream();
             await Request.Body.CopyToAsync(ms, cancellationToken);
@@ -58,10 +57,12 @@ namespace FirstHackathon.Controllers
                 Title = meeting.Title,
                 MeetingDate = meeting.MeetingDate,
                 Description = meeting.Description,
-                House = new HouseView { Id = house.Id,
+                House = new HouseView
+                {
+                    Id = house.Id,
                     Address = house.Address
                 }
-            }) ;
+            });
         }
     }
 }

@@ -30,7 +30,8 @@ namespace FirstHackathon.Models.Repository
 
         public async Task<Meeting> GetByHouseId(Guid houseId, CancellationToken cancellationToken)
         {
-            return await _context.Meetings.Include(o => o.House)
+            return await _context.Meetings
+                .Include(o => o.House)
                 .SingleOrDefaultAsync(w => w.House.Id == houseId, cancellationToken);
         }
     }
