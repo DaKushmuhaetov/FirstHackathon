@@ -75,7 +75,7 @@ namespace FirstHackathon.Controllers
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
-        [Authorize(AuthenticationSchemes = "person")]
+        [Authorize(AuthenticationSchemes = "admin,person")]
         [HttpGet("/meetings")]
         [ProducesResponseType(typeof(Page<MeetingListItem>), 200)]
         public async Task<ActionResult<Page<MeetingListItem>>> GetMeetings(
