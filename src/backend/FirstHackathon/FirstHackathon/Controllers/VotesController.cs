@@ -35,7 +35,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Get list of votings
+        /// Get list of votings for person
         /// </summary>
         /// <param name="onlyOpened">Returns only active votings</param>
         /// <param name="binding">Input model</param>
@@ -43,7 +43,7 @@ namespace FirstHackathon.Controllers
         [Authorize(AuthenticationSchemes = "person")]
         [HttpGet("/votings")]
         [ProducesResponseType(typeof(Page<VotingListItem>), 200)]
-        public async Task<ActionResult<Page<VotingListItem>>> GetVotings(
+        public async Task<ActionResult<Page<VotingListItem>>> GetVotingsPerson(
             CancellationToken cancellationToken,
             [FromQuery] VotingsBinding binding,
             [FromQuery] bool onlyOpened = false
@@ -92,6 +92,69 @@ namespace FirstHackathon.Controllers
             {
                 item.IsVoted = await IsVoted(person.Id, item.Id);
             }
+
+            return new Page<VotingListItem>
+            {
+                Limit = binding.Limit,
+                Offset = binding.Offset,
+                Total = await query.CountAsync(),
+                Items = items
+            };
+        }
+
+        /// <summary>
+        /// Get list of votings for admin
+        /// </summary>
+        /// <param name="onlyOpened">Returns only active votings</param>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
+        [Authorize(AuthenticationSchemes = "admin")]
+        [HttpGet("/house/votings")]
+        [ProducesResponseType(typeof(Page<VotingListItem>), 200)]
+        public async Task<ActionResult<Page<VotingListItem>>> GetVotingsAdmin(
+            CancellationToken cancellationToken,
+            [FromQuery] VotingsBinding binding,
+            [FromQuery] bool onlyOpened = false
+            )
+        {
+            var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
+            var houseId = await _personRepository.Get(User.GetId(), cancellationToken);
+
+            var query = _context.Votings
+                .AsNoTracking()
+                .Include(o => o.Variants)
+                    .ThenInclude(variant => variant.Votes)
+                        .ThenInclude(vote => vote.Person)
+                .Include(o => o.House)
+                .Where(o => o.House.Id == house.Id)
+                .Where(o => onlyOpened == true ? o.IsClosed == false : true)
+                .Select(o => new VotingListItem
+                {
+                    Id = o.Id,
+                    Title = o.Title,
+                    IsClosed = o.IsClosed,
+                    Variants = o.Variants.Select(variant => new VariantView
+                    {
+                        Id = variant.Id,
+                        Title = variant.Title,
+                        Count = variant.Votes.Count,
+                        Votes = variant.Votes.Select(vote => new VoteView
+                        {
+                            Id = vote.Id,
+                            Person = new PersonView
+                            {
+                                Id = vote.Person.Id,
+                                Name = vote.Person.Name,
+                                Surname = vote.Person.Surname
+                            }
+                        }).ToList()
+                    }).ToList()
+                });
+
+            var items = await query
+                .Skip(binding.Offset)
+                .Take(binding.Limit)
+                .ToListAsync();
 
             return new Page<VotingListItem>
             {
