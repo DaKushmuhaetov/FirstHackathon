@@ -100,7 +100,7 @@ namespace FirstHackathon.Controllers
         /// <response code="200">Successfully</response>
         [HttpPost("/houses/{houseId}/votings")]
         [ProducesResponseType(typeof(VotingView), 200)]
-        [Authorize(AuthenticationSchemes = "house")]
+        [Authorize(AuthenticationSchemes = "admin")]
         public async Task<ActionResult<VotingView>> Create(
             CancellationToken cancellationToken,
             [FromBody]CreateVotingBinding binding)
