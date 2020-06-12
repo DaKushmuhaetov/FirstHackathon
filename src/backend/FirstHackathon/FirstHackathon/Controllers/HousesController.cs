@@ -35,8 +35,8 @@ namespace FirstHackathon.Controllers
         /// <response code="400">Address must be filled</response>
         /// <response code="409">House already exists or login already used</response>
         [HttpPost("/houses/create")]
-        [ProducesResponseType(typeof(HouseView), 200)]
-        public async Task<ActionResult<HouseView>> Create(
+        [ProducesResponseType(typeof(CreateHouseView), 200)]
+        public async Task<ActionResult<CreateHouseView>> Create(
             CancellationToken cancellationToken,
             [FromQuery] string address,
             [FromBody] CreateHouseBinding binding
@@ -55,11 +55,14 @@ namespace FirstHackathon.Controllers
 
             await _houseRepository.Save(house, cancellationToken);
 
-            return Ok(new HouseView
+            var token = await _jwt.Create(house, cancellationToken);
+
+            return Ok(new CreateHouseView
             {
                 Id = house.Id,
                 Address = house.Address,
-                LivesHereCounter = house.People.Count()
+                LivesHereCounter = house.People.Count(),
+                Token = new TokenView { AccessToken = token.Value }
             });
         }
 

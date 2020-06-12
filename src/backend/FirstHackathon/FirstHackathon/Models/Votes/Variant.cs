@@ -22,6 +22,11 @@ namespace FirstHackathon.Models.Votes
             Voting = voting ?? throw new ArgumentNullException(nameof(voting));
         }
 
+        public bool IsPersonVoted(Guid personId)
+        {
+            return Votes.SingleOrDefault(o => o.Person.Id == personId) != null;
+        }
+
         public void Vote(Vote vote)
         {
             if (vote == null)
@@ -30,9 +35,9 @@ namespace FirstHackathon.Models.Votes
             Votes.Add(vote);
         }
 
-        public void UnVote(Guid voteId)
+        public void UnVote(Guid personId)
         {
-            Votes.Remove(Votes.SingleOrDefault(o => o.Id == voteId));
+            Votes.Remove(Votes.SingleOrDefault(o => o.Person.Id == personId));
         }
     }
 }

@@ -10,6 +10,7 @@ namespace FirstHackathon
         {
             CreateHostBuilder(args)
                 .Build()
+                .RunDatabaseMigrations()
                 .Run();
         }
 

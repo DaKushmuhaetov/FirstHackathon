@@ -73,6 +73,10 @@ namespace FirstHackathon.Context
                 builder.HasMany(o => o.Meetings)
                     .WithOne(p => p.House)
                     .IsRequired(false);
+
+                builder.HasMany(o => o.Votings)
+                    .WithOne(p => p.House)
+                    .IsRequired(false);
             });
 
             modelBuilder.Entity<Meeting>(builder =>
@@ -115,7 +119,7 @@ namespace FirstHackathon.Context
 
                 builder.HasMany(o => o.Variants)
                     .WithOne(p => p.Voting)
-                    .IsRequired(false);
+                    .IsRequired();
             });
 
             modelBuilder.Entity<Variant>(builder =>
@@ -125,6 +129,9 @@ namespace FirstHackathon.Context
                 builder.HasKey(o => o.Id);
                 builder.Property(o => o.Id)
                     .ValueGeneratedNever()
+                    .IsRequired();
+
+                builder.Property(o => o.Title)
                     .IsRequired();
 
                 builder.HasMany(o => o.Votes)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,6 +26,29 @@ namespace FirstHackathon.Models.Votes
             Id = id;
             Title = title ?? throw new ArgumentNullException(nameof(title));
             House = house ?? throw new ArgumentNullException(nameof(house));
+        }
+
+        public bool IsPersonVoted(Guid personId)
+        {
+            foreach(var variant in Variants)
+            {
+                if (variant.IsPersonVoted(personId))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void Vote(Guid variantId, Person person)
+        {
+            var variant = Variants.SingleOrDefault(o => o.Id == variantId);
+            variant.Vote(new Votes.Vote(Guid.NewGuid(), person, variant));
+        }
+
+        public void UnVote(Guid variantId, Person person)
+        {
+            var variant = Variants.SingleOrDefault(o => o.Id == variantId);
+            variant.UnVote(person.Id);
         }
 
         public void AddVariant(Variant variant)
