@@ -50,6 +50,11 @@ namespace FirstHackathon.Models.Votes
             Variants.Add(variant);
         }
 
+        public void ClosedVote()
+        {
+            IsClosed = true;
+        }
+
         public void RemoveVariant(Guid variantId)
         {
             if (IsClosed)

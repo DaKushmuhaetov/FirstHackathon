@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -257,6 +258,51 @@ namespace FirstHackathon.Controllers
                         }
                     }).ToList()
                 }).ToList()
+            });
+        }
+
+        /// <summary>
+        /// Voting
+        /// </summary>
+        /// <param name="votingId">Voting id for closed</param>
+        /// <response code="200">Successfully</response>
+        [HttpPost("/votings/closed")]
+        [ProducesResponseType(typeof(ClosedVotingView), 200)]
+        [Authorize(AuthenticationSchemes = "admin")]
+        public async Task<ActionResult<ClosedVotingView>> Voting(
+            CancellationToken cancellationToken,
+            [FromQuery] Guid votingId)
+        {
+            var voting = await _votingRepository.Get(votingId, cancellationToken);
+
+            if (voting == null)
+                return NotFound(votingId);
+
+            voting.ClosedVote();
+
+            await _votingRepository.Save(voting, cancellationToken);
+
+            return Ok(new ClosedVotingView
+            {
+                Id = voting.Id,
+                Title = voting.Title,
+                Variants = voting.Variants.Select(o => new VariantView
+                {
+                    Id = o.Id,
+                    Title = o.Title,
+                    Count = o.Votes.Count,
+                    Votes = o.Votes.Select(v => new VoteView
+                    {
+                        Id = v.Id,
+                        Person = new PersonView
+                        {
+                            Id = v.Person.Id,
+                            Name = v.Person.Name,
+                            Surname = v.Person.Surname
+                        }
+                    }).ToList()
+                }).ToList(),
+                IsClosed = voting.IsClosed
             });
         }
 
