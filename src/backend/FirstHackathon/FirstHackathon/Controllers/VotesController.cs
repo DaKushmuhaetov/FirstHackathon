@@ -88,10 +88,10 @@ namespace FirstHackathon.Controllers
                 .Take(binding.Limit)
                 .ToListAsync();
 
-            items.ForEach(async o =>
+            foreach(var item in items)
             {
-                o.IsVoted = await IsVoted(person.Id, o.Id);
-            });
+                item.IsVoted = await IsVoted(person.Id, item.Id);
+            }
 
             return new Page<VotingListItem>
             {
