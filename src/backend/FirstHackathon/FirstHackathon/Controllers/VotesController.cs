@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +50,7 @@ namespace FirstHackathon.Controllers
             )
         {
             var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
-            var personId = User.GetId();
+            var person = await _personRepository.Get(User.GetId(), cancellationToken);
 
             var query = _context.Votings
                 .AsNoTracking()
@@ -66,7 +65,6 @@ namespace FirstHackathon.Controllers
                     Id = o.Id,
                     Title = o.Title,
                     IsClosed = o.IsClosed,
-                    IsVoted = o.IsPersonVoted(personId), // NOT WORKING
                     Variants = o.Variants.Select(variant => new VariantView
                     {
                         Id = variant.Id,
@@ -89,6 +87,11 @@ namespace FirstHackathon.Controllers
                 .Skip(binding.Offset)
                 .Take(binding.Limit)
                 .ToListAsync();
+
+            items.ForEach(async o =>
+            {
+                o.IsVoted = await IsVoted(person.Id, o.Id);
+            });
 
             return new Page<VotingListItem>
             {
@@ -164,8 +167,8 @@ namespace FirstHackathon.Controllers
 
             var person = await _personRepository.Get(User.GetId(), cancellationToken);
 
-            if (voting.IsPersonVoted(person.Id))
-                return Conflict("Already voted!"); // NOT WORKING
+            if (await IsVoted(person.Id, voting.Id))
+                return Conflict("Already voted!");
 
             voting.Vote(variant.Id, person);
 
@@ -192,6 +195,15 @@ namespace FirstHackathon.Controllers
                     }).ToList()
                 }).ToList()
             });
+        }
+
+        private async Task<bool> IsVoted(Guid personId, Guid votingId)
+        {
+            var vote = await _context.Votes
+                .Include(o => o.Person)
+                .Include(o => o.Variant)
+                .Where(o => o.Person.Id == personId && o.Variant.Voting.Id == votingId).AnyAsync();
+            return vote;
         }
     }
 }

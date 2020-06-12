@@ -22,11 +22,6 @@ namespace FirstHackathon.Models.Votes
             Voting = voting ?? throw new ArgumentNullException(nameof(voting));
         }
 
-        public bool IsPersonVoted(Guid personId)
-        {
-            return Votes.SingleOrDefault(o => o.Person.Id == personId) != null;
-        }
-
         public void Vote(Vote vote)
         {
             if (vote == null)
