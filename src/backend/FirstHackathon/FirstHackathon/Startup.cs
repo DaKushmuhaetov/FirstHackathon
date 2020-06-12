@@ -55,6 +55,8 @@ namespace FirstHackathon
 
             services.AddControllers();
 
+            services.AddCors();
+
             #endregion
 
             #region AuthenticationAndAuthorization
