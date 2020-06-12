@@ -132,15 +132,11 @@ namespace FirstHackathon
                 options.SwaggerEndpoint("../v1/swagger.json", "FirstHackathon MyHome Api");
             });
 
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
             app.UseRequestResponseLogging(Microsoft.Extensions.Logging.LogLevel.Information, Microsoft.Extensions.Logging.LogLevel.Information);
 
             app.UseMvc();
-
-            app.UseCors(builder => {
-                builder.AllowAnyOrigin();
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-            });
 
             app.UseRewriter(new RewriteOptions().AddRedirect(@"^$", "swagger", (int)HttpStatusCode.Redirect));
         }
