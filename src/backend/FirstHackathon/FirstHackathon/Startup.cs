@@ -55,6 +55,8 @@ namespace FirstHackathon
 
             services.AddControllers();
 
+            services.AddCors();
+
             #endregion
 
             #region AuthenticationAndAuthorization
@@ -129,6 +131,8 @@ namespace FirstHackathon
             {
                 options.SwaggerEndpoint("../v1/swagger.json", "FirstHackathon MyHome Api");
             });
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseRequestResponseLogging(Microsoft.Extensions.Logging.LogLevel.Information, Microsoft.Extensions.Logging.LogLevel.Information);
 
