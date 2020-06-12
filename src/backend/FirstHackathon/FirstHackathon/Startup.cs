@@ -134,6 +134,8 @@ namespace FirstHackathon
 
             app.UseMvc();
 
+            app.UseCors(builder => builder.AllowAnyOrigin());
+
             app.UseRewriter(new RewriteOptions().AddRedirect(@"^$", "swagger", (int)HttpStatusCode.Redirect));
         }
     }
