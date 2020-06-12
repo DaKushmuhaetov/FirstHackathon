@@ -87,7 +87,7 @@ class Login extends React.PureComponent {
             invalidList.push('email')
         }
 
-        this.setState({ invalidList }, () => console.log(this.state.invalidList))
+        this.setState({ invalidList })
 
         return invalidList.length > 0 ? invalidList : true
     }
@@ -104,12 +104,15 @@ class Login extends React.PureComponent {
 
         let http = new Http(`/person/login`, 'POST', data, { 'Content-Type': 'application/json' })
 
-        const response = await http.request().catch(() => {
-            this.context.handleToast('Нет ответа от сервера: вход', '#DC143C', 5000)
-            return
+        const response = await http.request().catch((status) => {
+            if (status === 401) this.context.handleToast('Неверный логин или пароль', '#DC143C', 5000)
+            return undefined
         })
 
-        console.log(response)
+        if (response === undefined) return
+
+        this.context.login(response.access_token)
+        document.location.reload(true)
     }
 
     render() {

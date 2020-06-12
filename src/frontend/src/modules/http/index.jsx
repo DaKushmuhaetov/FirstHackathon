@@ -1,6 +1,6 @@
 export default class Http {
     constructor(url, method, body, headers) {
-        this.url = `https://asp-firsthackathon.herokuapp.com${url}` // your server url
+        this.url = `http://localhost:53167${url}` // your server url
         this.method = method || 'GET'
         this.body = body || null
         this.headers = headers || { 'Content-Type': 'application/json' }
@@ -21,12 +21,18 @@ export default class Http {
                 headers: this.headers
             })
 
-            const data = await response.json()
+            let data
+
+            try {
+                data = await response.json()
+            } catch {
+                data = await response
+            }
 
             this.loading = false
 
             if (!response.ok) {
-                throw(new Error(data.message || 'Что-то пошло не так')) // Это важно
+                throw(response.status) // Это важно
             }
 
             return data

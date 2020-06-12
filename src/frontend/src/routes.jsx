@@ -5,8 +5,26 @@ import Main from './components/Main'
 import Login from './components/Login'
 import Registration from './components/Registration'
 
+// Подлежит удалению:
+import UserPanel from './components/UserPanel'
+
 class Routers extends React.PureComponent {
     render() {
+        const {isAuth} = this.props
+
+        if (isAuth) {
+            return (
+                <Switch>
+                    <Route exact
+                        path={'/'}
+                        render={() => <UserPanel/>}
+                    />
+
+                    <Redirect to={'/'}/>
+                </Switch>
+            )
+        }
+
         return (
             <Switch>
                 <Route exact

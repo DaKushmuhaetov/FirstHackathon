@@ -115,12 +115,14 @@ class Registration extends React.PureComponent {
     async componentDidMount() {
         let http = new Http(`/houses`, 'GET')
 
-        const houses = await http.request().catch(() => {
+        const response = await http.request().catch(() => {
             this.context.handleToast('Нет ответа от сервера: список домов', '#DC143C', 5000)
-            return
+            return undefined
         })
 
-        this.setState({ houses: houses ? houses.items : [] })
+        if (response === undefined) return
+
+        this.setState({ houses: response.items })
     }
 
     handleRegister = async (e) => {
@@ -135,14 +137,27 @@ class Registration extends React.PureComponent {
             password: this.state.password
         })
 
-        let http = new Http(`/houses/${this.state.houseId}/add`, 'POST', data, { 'Content-Type': 'application/json' })
+        let http = new Http(`/houses/${this.state.houses[this.state.houseId].id}/add`, 'POST', data, { 'Content-Type': 'application/json' })
 
-        const response = await http.request().catch(() => {
-            this.context.handleToast('Нет ответа от сервера: регистрация', '#DC143C', 5000)
-            return
+        const response = await http.request().catch((status) => {
+            
+            switch (status) {
+                case 404:
+                    this.context.handleToast('Дом не найден', '#DC143C', 5000)
+                    break
+                case 409:
+                    this.context.handleToast('Пользователь с таким email уже зарегистрирован', '#DC143C', 5000)
+                    break
+                default:
+                    break
+            }
+
+            return undefined
         })
 
-        console.log(response)
+        if (response === undefined) return
+
+        this.context.handleToast('Вы успешно подали заявку на регистрацию', '#8BC34A', 5000)
     }
 
     selectHouse = (e) => {
