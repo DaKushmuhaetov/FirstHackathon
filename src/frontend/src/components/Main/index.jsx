@@ -32,7 +32,7 @@ class Main extends React.PureComponent {
                         </Typography>
 
                         <Button
-                            onClick={() => this.context.handlePushTo('/registration')}
+                            onClick={() => this.props.history.push('/registration')}
                             variant="contained"
                             color="primary"
                             className="main-btn"

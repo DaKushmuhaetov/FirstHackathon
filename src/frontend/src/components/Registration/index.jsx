@@ -16,11 +16,15 @@ import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import HomeIcon from '@material-ui/icons/Home'
 import Grid from '@material-ui/core/Grid'
-import DateFnsUtils from '@date-io/date-fns'
-import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers'
+import InputLabel from '@material-ui/core/InputLabel'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
 
 // Context
 import {Context} from '../../context'
+
+// Modules
+import Http from '../../modules/http'
 
 // Styles
 import './index.css'
@@ -60,32 +64,12 @@ class Registration extends React.PureComponent {
     state = {
         firstName: '',
         lastName: '',
-        date: new Date('2002-06-14T21:11:54'),
+        houseId: -1,
         email: '',
         password: '',
 
+        houses: [],
         invalidList: []
-    }
-
-    handleDateChange = (date) => {
-        if (date.toString() === 'Invalid Date') {
-            let newArr = this.state.invalidList.slice()
-            newArr.push('date')
-
-            this.setState({ invalidList: newArr })
-        } else {
-            if (this.state.invalidList.includes('date')) {
-                let newArr = this.state.invalidList.slice()
-
-                const index = newArr.indexOf('date')
-                if (index > -1) {
-                    newArr.splice(index, 1)
-                    this.setState({ invalidList: newArr })
-                }
-            }
-        }
-
-        this.setState({ date })
     }
 
     handleChange = (e) => {
@@ -114,34 +98,71 @@ class Registration extends React.PureComponent {
             invalidList.push('password')
         }
 
+        if (this.state.houseId === -1) {
+            invalidList.push('house')
+        }
+
         const email = /\S+@\S+\.\S+/
         if (email.test(this.state.email) === false) {
             invalidList.push('email')
         }
 
-        if (this.state.invalidList.includes('date')) {
-            invalidList.push('date')
-        }
-
         this.setState({ invalidList }, () => console.log(this.state.invalidList))
 
-        return invalidList.length > 0 ? invalidList : false
+        return invalidList.length > 0 ? invalidList : true
     }
 
-    handleRegister = (e) => {
+    async componentDidMount() {
+        let http = new Http(`/houses`, 'GET')
+
+        const houses = await http.request().catch(() => {
+            this.context.handleToast('Нет ответа от сервера: список домов', '#DC143C', 5000)
+            return
+        })
+
+        this.setState({ houses: houses ? houses.items : [] })
+    }
+
+    handleRegister = async (e) => {
         e.preventDefault()
 
-        if (this.handleValidate() !== false) return
+        if (this.handleValidate() !== true) return
 
-        console.log(this.state)
+        const data = JSON.stringify({
+            name: this.state.firstName,
+            surname: this.state.lastName,
+            login: this.state.email,
+            password: this.state.password
+        })
+
+        let http = new Http(`/houses/${this.state.houseId}/add`, 'POST', data, { 'Content-Type': 'application/json' })
+
+        const response = await http.request().catch(() => {
+            this.context.handleToast('Нет ответа от сервера: регистрация', '#DC143C', 5000)
+            return
+        })
+
+        console.log(response)
+    }
+
+    selectHouse = (e) => {
+        const houseId = parseInt(e.target.value)
+
+        if (isNaN(houseId)) return
+
+        this.setState({ houseId })
     }
 
     render() {
         const {classes} = this.props
         const invalidList = this.state.invalidList
 
+        const houses = this.state.houses.map(function(house, index) {
+            return <option key={house.id} value={index}>{house.address}</option>
+        })
+
         return (
-            <Container component="main" maxWidth="xs">
+            <Container component="div" maxWidth="xs" className="auth">
                 <CssBaseline />
                 <div className={classes.paper}>
                     <Avatar className={classes.avatar}>
@@ -186,23 +207,22 @@ class Registration extends React.PureComponent {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                    <KeyboardDatePicker
-                                        fullWidth
-                                        disableToolbar
-                                        variant="inline"
-                                        format="dd/MM/yyyy"
-                                        id="date-picker-inline"
-                                        label="Дата рождения"
-                                        invalidDateMessage="Некорректная дата"
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-
-                                        value={this.state.date}
-                                        onChange={this.handleDateChange}
-                                    />
-                                </MuiPickersUtilsProvider>
+                                <FormControl error={invalidList.includes('house')} required fullWidth variant="outlined" className={classes.formControl}>
+                                    <InputLabel htmlFor="outlined-age-native-simple">Дом</InputLabel>
+                                    <Select
+                                    native
+                                    value={this.state.houseId}
+                                    onChange={this.selectHouse}
+                                    label="Дом"
+                                    inputProps={{
+                                        name: 'Дом',
+                                        id: 'outlined-age-native-simple',
+                                    }}
+                                    >
+                                        <option aria-label="None" value="" />
+                                        {houses}
+                                    </Select>
+                                </FormControl>
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
