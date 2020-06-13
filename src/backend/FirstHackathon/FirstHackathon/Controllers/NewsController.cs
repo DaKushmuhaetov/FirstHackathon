@@ -2,10 +2,13 @@
 using FirstHackathon.Context;
 using FirstHackathon.Context.Repository;
 using FirstHackathon.Extensions;
+using FirstHackathon.Models;
 using FirstHackathon.Views;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,8 +31,8 @@ namespace FirstHackathon.Controllers
         {
             _houseRepository = houseRepository;
             _personRepository = personRepository;
-            _context = context;
             _newsRepository = newsRepository;
+            _context = context;
         }
 
         /// <summary>
@@ -76,6 +79,37 @@ namespace FirstHackathon.Controllers
                 Total = await query.CountAsync(),
                 Items = items
             };
+        }
+
+        /// <summary>
+        /// Create new news post [admin]
+        /// </summary>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
+        [HttpPost("/house/news")]
+        [Consumes("application/octet-stream")]
+        [ProducesResponseType(typeof(NewsPostView), 200)]
+        [Authorize(AuthenticationSchemes = "admin")]
+        public async Task<ActionResult<NewsPostView>> Create(
+            CancellationToken cancellationToken,
+            [FromQuery] CreateNewsPostBinding binding)
+        {
+            var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
+
+            await using var ms = new MemoryStream();
+            await Request.Body.CopyToAsync(ms, cancellationToken);
+
+            var post = new NewsPost(Guid.NewGuid(), binding.Title, binding.Description, ms.ToArray(), DateTime.UtcNow, house);
+
+            await _newsRepository.Save(post, cancellationToken);
+
+            return Ok(new NewsPostView
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Description = post.Description,
+                Image = post.Image
+            });
         }
     }
 }
