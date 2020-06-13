@@ -113,5 +113,36 @@ namespace FirstHackathon.Controllers
                 Image = post.Image
             });
         }
+
+        /// <summary>
+        /// Remove news post [admin]
+        /// </summary>
+        /// <param name="newsPostId">News post id</param>
+        /// <response code="204">Successfully</response>
+        /// <response code="404">News post not found</response>
+        [HttpDelete("/house/news/{newsPostId}")]
+        [Authorize(AuthenticationSchemes = "admin")]
+        public async Task<ActionResult> Remove(
+            CancellationToken cancellationToken,
+            [FromRoute]Guid newsPostId)
+        {
+            var newsPost = await _newsRepository.Get(newsPostId, cancellationToken);
+
+            if (newsPost == null)
+                return NotFound($"News post not found: {newsPostId}");
+
+            var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
+
+            if (house == null)
+                return Unauthorized();
+            if (newsPost.House != house)
+                return Unauthorized();
+
+            _context.News.Remove(newsPost);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
