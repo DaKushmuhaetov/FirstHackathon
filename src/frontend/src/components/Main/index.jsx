@@ -17,8 +17,9 @@ class Main extends React.PureComponent {
     static contextType = Context
 
     render() {
-        return (
+        return (    
             <div className="main">
+                
                 <div className="main-inner">
                     <img className="main-logo" src={logo} alt=""/>
                     <div className="main-center">
