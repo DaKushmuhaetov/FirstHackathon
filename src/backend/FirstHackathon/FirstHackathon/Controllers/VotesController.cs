@@ -35,7 +35,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Get list of votings for person
+        /// Get list of votings for person [person]
         /// </summary>
         /// <param name="onlyOpened">Returns only active votings</param>
         /// <param name="binding">Input model</param>
@@ -103,7 +103,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Get list of votings for admin
+        /// Get list of votings for admin [admin]
         /// </summary>
         /// <param name="onlyOpened">Returns only active votings</param>
         /// <param name="binding">Input model</param>
@@ -165,7 +165,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Create new voting
+        /// Create new voting [admin]
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
@@ -201,7 +201,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Vote
+        /// Vote [person]
         /// </summary>
         /// <param name="votingId">Voting id for vote</param>
         /// <param name="variantId">Variant id for voting</param>
@@ -262,7 +262,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Close voting
+        /// Close voting [admin]
         /// </summary>
         /// <param name="votingId">Voting id for closing</param>
         /// <response code="200">Successfully</response>

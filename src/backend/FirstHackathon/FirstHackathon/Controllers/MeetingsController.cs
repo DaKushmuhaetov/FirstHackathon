@@ -33,7 +33,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Create new meeting
+        /// Create new meeting [admin]
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
@@ -71,7 +71,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Get meetings
+        /// Get meetings [admin,person]
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
