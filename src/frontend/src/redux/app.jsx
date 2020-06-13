@@ -8,13 +8,7 @@ export function updateData(data) {
 }
 
 const initialState = {
-    data: {
-        id: '0',
-        name: 'Test',
-        surname: 'Testovich',
-        email: 'none',
-        address: 'none'
-    }
+    data: {}
 }
 
 export const app = (state = initialState, action) => {

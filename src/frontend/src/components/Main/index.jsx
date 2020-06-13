@@ -24,11 +24,11 @@ class Main extends React.PureComponent {
                     <img className="main-logo" src={logo} alt=""/>
                     <div className="main-center">
 
-                        <Typography variant="h4" gutterBottom className="main-title">
+                        <Typography variant="h3" gutterBottom className="main-title">
                             Наш Дом
                         </Typography>
 
-                        <Typography variant="subtitle1" gutterBottom className="main-description">
+                        <Typography variant="h5" gutterBottom className="main-description">
                             Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iusto nisi deleniti quod quos adipisci, animi dolore vitae quidem dolorem harum molestias sint eligendi obcaecati fugiat provident porro, vel consectetur minima?
                         </Typography>
 

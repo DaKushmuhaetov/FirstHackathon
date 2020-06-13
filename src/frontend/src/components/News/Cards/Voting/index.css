@@ -1,0 +1,39 @@
+
+.nested {
+    box-shadow: 3px 3px 20px rgba(0,0,0,0.2);
+    margin: 6px;
+}
+.vote-root {
+    width: 100%
+}
+.chose-root {
+    width: 'auto';
+    transition: all 1s linear;
+}
+
+.title-prompt {
+    margin-bottom: 4px;
+}
+
+.percentage {
+    float: right;
+    position: relative;
+    transform: translateY(65%);
+    height: min-content;
+    font-size: medium;
+    color: rgba(0, 0, 0, 0);
+    transition: color 1.3s 1s linear;
+}
+.progress-bar {
+    height: 0;
+    width: 0;
+    background-color: cornflowerblue;
+    position: relative;
+    transition: width 1s .3s, height .3s linear;
+}
+.voted .progress-bar {
+    height: 8px;
+}
+.voted .percentage {
+    color: rgba(0,0,0,9);
+}

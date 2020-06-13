@@ -22,9 +22,6 @@ import {Context} from '../../context'
 // Modules
 import Http from '../../modules/http'
 
-// Styles
-import './index.css'
-
 const styles = theme => ({
     paper: {
         marginTop: theme.spacing(8),
@@ -60,7 +57,7 @@ const styles = theme => ({
     },
 })
 
-class Login extends React.PureComponent {
+class HouseLogin extends React.PureComponent {
     static contextType = Context
 
     state = {
@@ -108,7 +105,7 @@ class Login extends React.PureComponent {
             password: this.state.password
         })
 
-        let http = new Http(`/person/login`, 'POST', data, { 'Content-Type': 'application/json' })
+        let http = new Http(`/house/login`, 'POST', data, { 'Content-Type': 'application/json' })
 
         const response = await http.request().catch((status) => {
             if (status === 401) this.context.handleToast('Неверный логин или пароль', '#DC143C', 5000)
@@ -133,7 +130,7 @@ class Login extends React.PureComponent {
                         <HomeIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Вход
+                        Управление домом
                     </Typography>
                     <form style={{ textAlign: 'center' }} className={classes.form} noValidate>
                         <TextField
@@ -179,10 +176,6 @@ class Login extends React.PureComponent {
                         >
                             Вход
                         </Button>
-                        <div className={classes.flexColumn}>
-                            <LinkRouter className={classes.link} to="/registration">Нет аккаунта? Зарегистрируйтесь</LinkRouter>
-                            <LinkRouter style={{ marginTop: '5px' }} className={classes.link}>Войти через госуслуги ESIA</LinkRouter>
-                        </div>
                     </form>
                 </div>
                 <Box mt={8}>
@@ -200,4 +193,4 @@ class Login extends React.PureComponent {
     }
 }
 
-export default withRouter(withStyles(styles)(Login))
+export default withRouter(withStyles(styles)(HouseLogin))

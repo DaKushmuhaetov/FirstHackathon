@@ -5,24 +5,85 @@ import Main from './components/Main'
 import Login from './components/Login'
 import Registration from './components/Registration'
 
-// Подлежит удалению:
 import UserPanel from './components/UserPanel'
+import HousePanel from './components/HousePanel'
+import HouseLogin from './components/HouseLogin'
+import HouseRegistration from './components/HouseRegistration'
+
+import Meetings from './components/Meetings'
+import Votings from './components/Votings'
+import News from './components/News'
+
+// Context
+import {Context} from './context'
 
 class Routers extends React.PureComponent {
+    static contextType = Context
+
     render() {
         const {isAuth} = this.props
 
         if (isAuth) {
-            return (
-                <Switch>
-                    <Route exact
-                        path={'/'}
-                        render={() => <UserPanel/>}
-                    />
+            if (this.context.isAdmin()) {
+                return (
+                    <Switch>
+                        <Route
+                            exact
+                            path={'/'}
+                            render={() => <HousePanel></HousePanel>}
+                        />
 
-                    <Redirect to={'/'}/>
-                </Switch>
-            )
+                        <Route
+                            exact
+                            path={'/meetings'}
+                            render={() => <HousePanel><Meetings/></HousePanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/news'}
+                            render={() => <HousePanel><News/></HousePanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/votings'}
+                            render={() => <HousePanel><Votings/></HousePanel>}
+                        />
+    
+                        <Redirect to={'/'}/>
+                    </Switch>
+                )
+            } else {
+                return (
+                    <Switch>
+                        <Route exact
+                            path={'/'}
+                            render={() => <UserPanel></UserPanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/meetings'}
+                            render={() => <UserPanel><Meetings/></UserPanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/news'}
+                            render={() => <UserPanel><News/></UserPanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/votings'}
+                            render={() => <UserPanel><Votings/></UserPanel>}
+                        />
+    
+                        <Redirect to={'/'}/>
+                    </Switch>
+                )
+            }
         }
 
         return (
@@ -40,6 +101,16 @@ class Routers extends React.PureComponent {
                 <Route exact
                     path={'/registration'}
                     render={() => <Registration/>}
+                />
+
+                <Route exact
+                    path={'/house/login'}
+                    render={() => <HouseLogin/>}
+                />
+
+                <Route exact
+                    path={'/house/registration'}
+                    render={() => <HouseRegistration/>}
                 />
     
                 <Redirect to={'/'}/>

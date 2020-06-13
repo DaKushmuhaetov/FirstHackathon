@@ -137,7 +137,7 @@ class Registration extends React.PureComponent {
             password: this.state.password
         })
 
-        let http = new Http(`/houses/${this.state.houses[this.state.houseId].id}/add`, 'POST', data, { 'Content-Type': 'application/json' })
+        let http = new Http(`/house/${this.state.houses[this.state.houseId].id}/person`, 'POST', data, { 'Content-Type': 'application/json' })
 
         const response = await http.request().catch((status) => {
             
