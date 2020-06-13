@@ -88,7 +88,7 @@ namespace FirstHackathon.Controllers
                 .Take(binding.Limit)
                 .ToListAsync();
 
-            foreach(var item in items)
+            foreach (var item in items)
             {
                 item.IsVoted = await IsVoted(person.Id, item.Id);
             }
