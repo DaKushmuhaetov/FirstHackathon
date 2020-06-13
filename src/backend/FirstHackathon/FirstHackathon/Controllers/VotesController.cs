@@ -45,7 +45,7 @@ namespace FirstHackathon.Controllers
         [ProducesResponseType(typeof(Page<VotingListItem>), 200)]
         public async Task<ActionResult<Page<VotingListItem>>> GetVotingsPerson(
             CancellationToken cancellationToken,
-            [FromQuery] VotingsBinding binding,
+            [FromQuery] DefaultListBinding binding,
             [FromQuery] bool onlyOpened = false
             )
         {
@@ -113,7 +113,7 @@ namespace FirstHackathon.Controllers
         [ProducesResponseType(typeof(Page<VotingListItem>), 200)]
         public async Task<ActionResult<Page<VotingListItem>>> GetVotingsAdmin(
             CancellationToken cancellationToken,
-            [FromQuery] VotingsBinding binding,
+            [FromQuery] DefaultListBinding binding,
             [FromQuery] bool onlyOpened = false
             )
         {

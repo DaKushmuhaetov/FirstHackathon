@@ -1,22 +1,19 @@
-using FirstHackathon.Models.Votes;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace FirstHackathon.Models
 {
-    public sealed class Person
+    public sealed class CreatePersonRequest
     {
         public Guid Id { get; }
         public string Name { get; }
         public string Surname { get; }
 
         public string Login { get; }
-        public string Password { get; private set; }
+        public string Password { get; }
         public House House { get; }
-        public List<Vote> Votes { get; } = new List<Vote>();
 
-        private Person() { }
-        public Person(Guid id, string name, string surname, string login, string password, House house)
+        private CreatePersonRequest() { }
+        public CreatePersonRequest(Guid id, string name, string surname, string login, string password, House house)
         {
             Id = id;
 
@@ -27,11 +24,6 @@ namespace FirstHackathon.Models
             Password = password ?? throw new ArgumentNullException(nameof(password));
 
             House = house ?? throw new ArgumentNullException(nameof(house));
-        }
-
-        public void SetPassword(string newPassword)
-        {
-            Password = newPassword;
         }
     }
 }

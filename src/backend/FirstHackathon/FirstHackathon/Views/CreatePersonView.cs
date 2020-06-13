@@ -7,7 +7,7 @@ namespace FirstHackathon.Views
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        public HouseView House { get; set; }
-        public TokenView Token { get; set; }
+        public string Login { get; set; }
+        public string Password { get; set; }
     }
 }

@@ -19,11 +19,17 @@ namespace FirstHackathon.Controllers
     public class HousesController : ControllerBase
     {
         private readonly IHouseRepository _houseRepository;
+        private readonly ICreatePersonRepository _createPersonRepository;
         private readonly FirstHackathonDbContext _context;
         private readonly IJwtAccessTokenFactory _jwt;
-        public HousesController(IHouseRepository houseRepository, FirstHackathonDbContext context, IJwtAccessTokenFactory jwt)
+        public HousesController(
+            IHouseRepository houseRepository,
+            ICreatePersonRepository createPersonRepository,
+            FirstHackathonDbContext context,
+            IJwtAccessTokenFactory jwt)
         {
             _houseRepository = houseRepository;
+            _createPersonRepository = createPersonRepository;
             _context = context;
             _jwt = jwt;
         }
@@ -72,11 +78,12 @@ namespace FirstHackathon.Controllers
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
+        [AllowAnonymous]
         [HttpGet("/houses/")]
         [ProducesResponseType(typeof(Page<HouseListItem>), 200)]
         public async Task<Page<HouseListItem>> GetHouses(
             CancellationToken cancellationToken,
-            [FromQuery] GetHouseListBinding binding)
+            [FromQuery] DefaultListBinding binding)
         {
             var query = _context.Houses
                 .AsNoTracking()
@@ -101,48 +108,186 @@ namespace FirstHackathon.Controllers
             };
         }
 
+        #region Person
+
         /// <summary>
-        /// House authentication by login and password
+        /// Get list of people lives here
+        /// </summary>
+        /// <response code="200">Successfully</response>
+        [Authorize(AuthenticationSchemes = "admin,person")]
+        [HttpGet("/house/people")]
+        [ProducesResponseType(typeof(Page<PersonView>), 200)]
+        public async Task<Page<PersonView>> GetPeople(
+            CancellationToken cancellationToken,
+            [FromQuery] DefaultListBinding binding)
+        {
+            var address = User.GetAddress();
+            var house = await _houseRepository.GetByAddress(address, cancellationToken);
+
+            var query = _context.People
+                .AsNoTracking()
+                .Include(o => o.House)
+                .Where(o => o.House == house)
+                .Select(o => new PersonView
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    Surname = o.Surname
+                });
+
+            var items = await query
+                .Skip(binding.Offset)
+                .Take(binding.Limit)
+                .ToListAsync();
+
+            return new Page<PersonView>
+            {
+                Limit = binding.Limit,
+                Offset = binding.Offset,
+                Total = await query.CountAsync(),
+                Items = items
+            };
+        }
+
+        /// <summary>
+        /// Get list of person registration requests
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
-        /// <response code="401">Invalid authorization code</response>
-        [AllowAnonymous]
-        [HttpPost("house/login")]
-        [ProducesResponseType(typeof(TokenView), 200)]
-        [ProducesResponseType(401)]
-        public async Task<ActionResult<TokenView>> Authentication(
+        [Authorize(AuthenticationSchemes = "admin")]
+        [HttpGet("/house/requests")]
+        [ProducesResponseType(typeof(Page<CreatePersonRequestListItem>), 200)]
+        public async Task<Page<CreatePersonRequestListItem>> GetCreatePersonRequests(
             CancellationToken cancellationToken,
-            [FromBody] AuthenticationBinding binding)
+            [FromQuery] DefaultListBinding binding)
         {
-            var house = await _context.Houses
-                .SingleOrDefaultAsync(o => o.Login == binding.Login && o.Password == binding.Password, cancellationToken);
+            var houseId = User.GetId();
 
-            if (house != null)
+            var query = _context.CreatePersonRequests
+                .AsNoTracking()
+                .Include(o => o.House)
+                .Where(o => o.House.Id == houseId)
+                .Select(o => new CreatePersonRequestListItem
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    Surname = o.Surname,
+                    Login = o.Login,
+                    Password = o.Password
+                });
+
+            var items = await query
+                .Skip(binding.Offset)
+                .Take(binding.Limit)
+                .ToListAsync();
+
+            return new Page<CreatePersonRequestListItem>
             {
-                var token = await _jwt.Create(house, cancellationToken);
-                return new TokenView { AccessToken = token.Value };
-            }
-            else
-            {
-                return Unauthorized();
-            }
+                Limit = binding.Limit,
+                Offset = binding.Offset,
+                Total = await query.CountAsync(),
+                Items = items
+            };
         }
 
         /// <summary>
-        /// Token validation for house
+        /// Reject person registration request
         /// </summary>
+        /// <param name="requestId">Person registration request id</param>
         /// <response code="200">Successfully</response>
-        /// <response code="401">Invalid authorization code</response>
+        /// <response code="404">Request not found</response>
         [Authorize(AuthenticationSchemes = "admin")]
+        [HttpPost("/house/person/{requestId}/reject")]
         [ProducesResponseType(200)]
-        [ProducesResponseType(401)]
-        [HttpPost("/house/token")]
-        public async Task<ActionResult> IsTokenValid(
-            CancellationToken cancellationToken)
+        public async Task<ActionResult<CreatePersonView>> RejectPersonRequest(
+            CancellationToken cancellationToken,
+            [FromRoute] Guid requestId)
         {
-            var houseId = User.GetId();
-            return await _houseRepository.Get(houseId, cancellationToken) == null ? Unauthorized() : (ActionResult)NoContent();
+            var request = await _createPersonRepository.Get(requestId, cancellationToken);
+            if (request == null)
+                return NotFound($"Request not found: {requestId}");
+
+            if (request.House.Id != User.GetId())
+                return Unauthorized();
+
+            await _createPersonRepository.Reject(request.Id, cancellationToken);
+
+            return Ok();
         }
+
+        /// <summary>
+        /// Accept person registration request
+        /// </summary>
+        /// <param name="requestId">Person registration request id</param>
+        /// <response code="200">Successfully</response>
+        /// <response code="404">Request not found</response>
+        [Authorize(AuthenticationSchemes = "admin")]
+        [HttpPost("/house/person/{requestId}/accept")]
+        [ProducesResponseType(typeof(CreatePersonView), 200)]
+        public async Task<ActionResult<CreatePersonView>> AcceptPersonRequest(
+            CancellationToken cancellationToken,
+            [FromRoute] Guid requestId)
+        {
+            var request = await _createPersonRepository.Get(requestId, cancellationToken);
+            if (request == null)
+                return NotFound($"Request not found: {requestId}");
+
+            if (request.House.Id != User.GetId())
+                return Unauthorized();
+
+            await _createPersonRepository.Accept(request.Id, cancellationToken);
+
+            return Ok(new CreatePersonView
+            {
+                Id = request.Id,
+                Name = request.Name,
+                Surname = request.Surname,
+                Login = request.Login,
+                Password = request.Password
+            });
+        }
+
+        /// <summary>
+        /// Create new request for person registration
+        /// </summary>
+        /// <param name="binding">Input model</param>
+        /// <response code="200">Successfully</response>
+        /// <response code="404">House not found</response>
+        /// <response code="409">Person with this login already exists</response>
+        [Authorize(AuthenticationSchemes = "admin")]
+        [HttpPost("/house/person")]
+        [ProducesResponseType(typeof(CreatePersonView), 200)]
+        public async Task<ActionResult<CreatePersonView>> CreatePersonRequest(
+            CancellationToken cancellationToken,
+            [FromBody] CreatePersonBinding binding)
+        {
+            try
+            {
+                var houseId = User.GetId();
+
+                var house = await _houseRepository.Get(houseId, cancellationToken);
+                if (house == null)
+                    return NotFound($"House not found: {houseId}");
+
+                var person = new CreatePersonRequest(Guid.NewGuid(), binding.Name, binding.Surname, binding.Login, binding.Password, house);
+
+                await _createPersonRepository.Create(person, cancellationToken);
+
+                return Ok(new CreatePersonView
+                {
+                    Id = person.Id,
+                    Name = person.Name,
+                    Surname = person.Surname,
+                    Login = person.Login,
+                    Password = person.Password
+                });
+            }
+            catch (InvalidOperationException exception)
+            {
+                return Conflict(exception.Message);
+            }
+        }
+
+        #endregion
     }
 }

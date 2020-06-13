@@ -2,7 +2,7 @@
 
 namespace FirstHackathon.Bindings
 {
-    public sealed class GetHouseListBinding
+    public sealed class DefaultListBinding
     {
         /// <summary>
         /// Offset for pagination. Optional. 0 by default.
@@ -15,9 +15,9 @@ namespace FirstHackathon.Bindings
         public int Limit { get; set; } = 20;
     }
 
-    public sealed class GetHouseListBindingValidator : AbstractValidator<GetHouseListBinding>
+    public sealed class DefaultListBindingValidator : AbstractValidator<DefaultListBinding>
     {
-        public GetHouseListBindingValidator()
+        public DefaultListBindingValidator()
         {
             RuleFor(b => b.Offset)
                 .GreaterThanOrEqualTo(0);

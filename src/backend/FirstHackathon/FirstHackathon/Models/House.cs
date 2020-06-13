@@ -13,6 +13,7 @@ namespace FirstHackathon.Models
         public string Password { get; }
 
         public List<Person> People { get; }
+        public List<CreatePersonRequest> CreatePeopleRequests { get; }
         public List<Voting> Votings { get; } = new List<Voting>();
         public List<Meeting> Meetings { get; } = new List<Meeting>();
 

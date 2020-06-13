@@ -114,6 +114,7 @@ namespace FirstHackathon
             services.AddScoped<IPersonRepository, PersonRepository>();
             services.AddScoped<IVotingRepository, VotingRepository>();
             services.AddScoped<IMeetingRepository, MeetingRepository>();
+            services.AddScoped<ICreatePersonRepository, CreatePersonRepository>();
 
             #endregion
         }

@@ -80,7 +80,7 @@ namespace FirstHackathon.Controllers
         [ProducesResponseType(typeof(Page<MeetingListItem>), 200)]
         public async Task<ActionResult<Page<MeetingListItem>>> GetMeetings(
             CancellationToken cancellationToken,
-            [FromQuery] GetMeetingsListBinding binding)
+            [FromQuery] DateListBinding binding)
         {
             var address = User.GetAddress();
             House house = await _houseRepository.GetByAddress(address, cancellationToken);
