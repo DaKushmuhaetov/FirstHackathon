@@ -32,34 +32,57 @@ class App extends React.PureComponent {
     auth = new Auth()
     isAuthed = !!this.auth.token
 
+    isAdmin = () => {
+        const token = this.parseJwt(this.auth.token)
+
+        return token.iss === 'FirstHackathon.Backend.Admin'
+    }
+
     async componentDidMount() {
         Toast.Initialize(this.toastBox.current, this.main.current) // Привязываем тосты
 
         if (this.isAuthed) {
-            let http = new Http("/person/token", "POST", null, {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.auth.token}`
-            })
+            const data = this.parseJwt(this.auth.token)
+
+            let http
+
+            if (this.isAdmin()) {
+                http = new Http("/house/token", "POST", null, {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.auth.token}`
+                })
+            } else {
+                http = new Http("/person/token", "POST", null, {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${this.auth.token}`
+                })
+            }
     
-            const response = await http.request().catch(() => {
-                if (response.status === 401) this.auth.logout()
+            const response = await http.request().catch((status) => {
+                if (status === 401) this.auth.logout()
 
                 return undefined
             })
 
             if (response === undefined) return
 
-            const data = this.parseJwt(this.auth.token)
-
             const prefix = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/'
 
-            const email = data[`${prefix}emailaddress`]
-            const name = data[`${prefix}name`]
-            const surname = data[`${prefix}surname`]
-            const id = data[`${prefix}nameidentifier`]
-            const address = data[`${prefix}streetaddress`]
+            if (this.isAdmin()) {
+                const login = data[`${prefix}emailaddress`]
+                const id = data[`${prefix}nameidentifier`]
+                const address = data[`${prefix}streetaddress`]
 
-            this.props.updateData({ email, name, surname, id, address })
+                this.props.updateData({ login, id, address })
+            } else {
+                const email = data[`${prefix}emailaddress`]
+                const name = data[`${prefix}name`]
+                const surname = data[`${prefix}surname`]
+                const id = data[`${prefix}nameidentifier`]
+                const address = data[`${prefix}streetaddress`]
+
+                this.props.updateData({ email, name, surname, id, address })
+            }
         }
     }
 
@@ -85,7 +108,8 @@ class App extends React.PureComponent {
                 login: this.auth.login,
                 logout: this.auth.logout,
                 isAuthed: this.isAuthed,
-                parseJwt: this.parseJwt
+                parseJwt: this.parseJwt,
+                isAdmin: this.isAdmin
             }}>
                 <div ref={this.toastBox} id="toast-box"/>
                 <main className="bg" ref={this.main}>

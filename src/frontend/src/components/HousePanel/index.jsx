@@ -35,18 +35,19 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import ListSubheader from '@material-ui/core/ListSubheader'
 
-import AnnouncementIcon from '@material-ui/icons/Announcement';
-import TelegramIcon from '@material-ui/icons/Telegram';
+import AnnouncementIcon from '@material-ui/icons/Announcement'
+import TelegramIcon from '@material-ui/icons/Telegram'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
+import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 
 // Styles
 import './index.css'
 
-class UserPanel extends React.PureComponent {
+class AdminPanel extends React.PureComponent {
     static contextType = Context
 
     state = {
-        open: false,
+        open: false
     }
 
     handleDrawerOpen = () => {
@@ -64,7 +65,7 @@ class UserPanel extends React.PureComponent {
         return (
             <div className={classes.root}>
                 <CssBaseline />
-                <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                <AppBar color="secondary" position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
                     <Toolbar className={classes.toolbar}>
                     <IconButton
                         edge="start"
@@ -77,7 +78,7 @@ class UserPanel extends React.PureComponent {
                     </IconButton>
                     <HomeIcon className={classes.homeIcon}/>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Наш Дом - {this.props.data.address}
+                        Наш Дом - {this.props.data.address} (Администрирование)
                     </Typography>
                     <IconButton color="inherit">
                         <Badge badgeContent={0} color="secondary">
@@ -100,7 +101,7 @@ class UserPanel extends React.PureComponent {
                     </div>
                     <Divider />
                     <List>
-                        <LeftList history={this.props.history} open={open} logout={this.context.logout} name={this.props.data.name} surname={this.props.data.surname}/>
+                        <LeftList history={this.props.history} open={open} logout={this.context.logout} login={this.props.data.login}/>
                     </List>
                 </Drawer>
                 <main className={classes.content}>
@@ -152,8 +153,15 @@ const LeftList = (props) => {
                 <ListItemText primary="Голосования" />
             </ListItem>
 
+            <ListItem button>
+                <ListItemIcon>
+                    <AccessibilityNewIcon />
+                </ListItemIcon>
+                <ListItemText primary="Пользователи" />
+            </ListItem>
+
             <Divider style={{ marginTop: '8px' }} />
-            {props.open ? <ListSubheader style={{ marginBottom: '-12px' }} left="true">{props.name} {props.surname}</ListSubheader> : null}
+            {props.open ? <ListSubheader style={{ marginBottom: '-12px' }} left="true">{props.login}</ListSubheader> : null}
 
             <ListItem onClick={logout} button>
                 <ListItemIcon>
@@ -264,4 +272,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default withRouter(withStyles(styles)(connect(mapStateToProps, null)(UserPanel)))
+export default withRouter(withStyles(styles)(connect(mapStateToProps, null)(AdminPanel)))

@@ -1,0 +1,11 @@
+.root {
+    width: 96%;
+    margin: 2%;
+    transition: margin-left .3s linear, transform .3s .3s ease-out, height .3s .3s linear; 
+}
+.hide {
+    margin: 0;
+    margin-left: 120%;
+    transform: scaleY(0);
+    height: 0;
+}

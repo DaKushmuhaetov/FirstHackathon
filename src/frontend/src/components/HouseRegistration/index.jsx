@@ -15,15 +15,13 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import HomeIcon from '@material-ui/icons/Home'
+import Grid from '@material-ui/core/Grid'
 
 // Context
 import {Context} from '../../context'
 
 // Modules
 import Http from '../../modules/http'
-
-// Styles
-import './index.css'
 
 const styles = theme => ({
     paper: {
@@ -33,12 +31,6 @@ const styles = theme => ({
         alignItems: 'center',
     },
 
-    flexColumn: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-
     avatar: {
         margin: theme.spacing(1),
         backgroundColor: theme.palette.secondary.main,
@@ -46,7 +38,7 @@ const styles = theme => ({
 
     form: {
         width: '100%',
-        marginTop: theme.spacing(1),
+        marginTop: theme.spacing(4),
     },
 
     submit: {
@@ -60,10 +52,11 @@ const styles = theme => ({
     },
 })
 
-class Login extends React.PureComponent {
+class HouseRegistration extends React.PureComponent {
     static contextType = Context
 
     state = {
+        address: '',
         email: '',
         password: '',
 
@@ -83,9 +76,17 @@ class Login extends React.PureComponent {
         let invalidList = []
 
         const withoutSymbols = /^([a-zа-яё]+|\d+)$/i
+        
+        if (this.state.address === '') {
+            invalidList.push('address')
+        }
 
         if (withoutSymbols.test(this.state.password) === false) {
             invalidList.push('password')
+        }
+
+        if (this.state.houseId === -1) {
+            invalidList.push('house')
         }
 
         const email = /\S+@\S+\.\S+/
@@ -93,12 +94,12 @@ class Login extends React.PureComponent {
             invalidList.push('email')
         }
 
-        this.setState({ invalidList })
+        this.setState({ invalidList }, () => console.log(this.state.invalidList))
 
         return invalidList.length > 0 ? invalidList : true
     }
 
-    handleAuth = async (e) => {
+    handleRegister = async (e) => {
         e.preventDefault()
 
         if (this.handleValidate() !== true) return
@@ -108,16 +109,27 @@ class Login extends React.PureComponent {
             password: this.state.password
         })
 
-        let http = new Http(`/person/login`, 'POST', data, { 'Content-Type': 'application/json' })
+        let http = new Http(`/houses/create?address=${this.state.address}`, 'POST', data, { 'Content-Type': 'application/json' })
 
         const response = await http.request().catch((status) => {
-            if (status === 401) this.context.handleToast('Неверный логин или пароль', '#DC143C', 5000)
+            
+            switch (status) {
+                case 400:
+                    this.context.handleToast('Адрес должен быть вписан', '#DC143C', 5000)
+                    break
+                case 409:
+                    this.context.handleToast('Дом с таким email уже зарегистрирован', '#DC143C', 5000)
+                    break
+                default:
+                    break
+            }
+
             return undefined
         })
 
         if (response === undefined) return
 
-        this.context.login(response.access_token)
+        this.context.login(response.token.access_token)
         document.location.reload(true)
     }
 
@@ -133,41 +145,60 @@ class Login extends React.PureComponent {
                         <HomeIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Вход
+                        Регистрация дома
                     </Typography>
                     <form style={{ textAlign: 'center' }} className={classes.form} noValidate>
-                        <TextField
-                            error={invalidList.includes('email')}
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    error={invalidList.includes('address')}
 
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email адрес"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="address"
+                                    label="Адрес"
+                                    name="address"
+                                    autoComplete="lname"
 
-                            onChange={this.handleChange}
-                            value={this.state.email}
-                        />
-                        <TextField
-                            error={invalidList.includes('password')}
+                                    value={this.state.lastName}
+                                    onChange={this.handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    error={invalidList.includes('email')}
 
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Пароль"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email адрес"
+                                    name="email"
+                                    autoComplete="email"
 
-                            onChange={this.handleChange}
-                            value={this.state.password}
-                        />
+                                    value={this.state.email}
+                                    onChange={this.handleChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    error={invalidList.includes('password')}
+
+                                    variant="outlined"
+                                    required
+                                    fullWidth
+                                    name="password"
+                                    label="Пароль"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="current-password"
+
+                                    value={this.state.password}
+                                    onChange={this.handleChange}
+                                />
+                            </Grid>
+                        </Grid>
                         <Button
                             type="submit"
                             fullWidth
@@ -175,14 +206,10 @@ class Login extends React.PureComponent {
                             color="primary"
                             className={classes.submit}
 
-                            onClick={this.handleAuth}
+                            onClick={this.handleRegister}
                         >
-                            Вход
+                            Регистрация
                         </Button>
-                        <div className={classes.flexColumn}>
-                            <LinkRouter className={classes.link} to="/registration">Нет аккаунта? Зарегистрируйтесь</LinkRouter>
-                            <LinkRouter style={{ marginTop: '5px' }} className={classes.link}>Войти через госуслуги ESIA</LinkRouter>
-                        </div>
                     </form>
                 </div>
                 <Box mt={8}>
@@ -200,4 +227,4 @@ class Login extends React.PureComponent {
     }
 }
 
-export default withRouter(withStyles(styles)(Login))
+export default withRouter(withStyles(styles)(HouseRegistration))

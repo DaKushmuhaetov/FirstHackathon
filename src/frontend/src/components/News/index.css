@@ -1,0 +1,6 @@
+.pogination {
+    position: absolute;
+    left: 50%;
+    top: 98%;
+    transform: translate(-50%, -100%);
+}
