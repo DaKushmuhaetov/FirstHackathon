@@ -254,17 +254,16 @@ namespace FirstHackathon.Controllers
         /// <response code="200">Successfully</response>
         /// <response code="404">House not found</response>
         /// <response code="409">Person with this login already exists</response>
-        [Authorize(AuthenticationSchemes = "admin")]
-        [HttpPost("/house/person")]
+        [AllowAnonymous]
+        [HttpPost("/house/{houseId}/person")]
         [ProducesResponseType(typeof(CreatePersonView), 200)]
         public async Task<ActionResult<CreatePersonView>> CreatePersonRequest(
             CancellationToken cancellationToken,
+            [FromRoute] Guid houseId,
             [FromBody] CreatePersonBinding binding)
         {
             try
             {
-                var houseId = User.GetId();
-
                 var house = await _houseRepository.Get(houseId, cancellationToken);
                 if (house == null)
                     return NotFound($"House not found: {houseId}");
