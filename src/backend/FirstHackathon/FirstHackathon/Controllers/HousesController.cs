@@ -35,12 +35,13 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Create new house
+        /// Create new house [anonymous]
         /// </summary>
         /// <param name="address">House address</param>
         /// <response code="200">Successfully</response>
         /// <response code="400">Address must be filled</response>
         /// <response code="409">House already exists or login already used</response>
+        [AllowAnonymous]
         [HttpPost("/houses/create")]
         [ProducesResponseType(typeof(CreateHouseView), 200)]
         public async Task<ActionResult<CreateHouseView>> Create(
@@ -74,7 +75,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Get list of houses
+        /// Get list of houses [anonymous]
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
@@ -111,7 +112,7 @@ namespace FirstHackathon.Controllers
         #region Person
 
         /// <summary>
-        /// Get list of people lives here
+        /// Get list of people lives here [admin,person]
         /// </summary>
         /// <response code="200">Successfully</response>
         [Authorize(AuthenticationSchemes = "admin,person")]
@@ -150,7 +151,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Get list of person registration requests
+        /// Get list of person registration requests [admin]
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
@@ -191,7 +192,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Reject person registration request
+        /// Reject person registration request [admin]
         /// </summary>
         /// <param name="requestId">Person registration request id</param>
         /// <response code="200">Successfully</response>
@@ -216,7 +217,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Accept person registration request
+        /// Accept person registration request [admin]
         /// </summary>
         /// <param name="requestId">Person registration request id</param>
         /// <response code="200">Successfully</response>
@@ -248,7 +249,7 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Create new request for person registration
+        /// Create new request for person registration [anonymous]
         /// </summary>
         /// <param name="binding">Input model</param>
         /// <response code="200">Successfully</response>
