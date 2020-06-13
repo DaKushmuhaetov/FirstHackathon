@@ -124,7 +124,7 @@ namespace FirstHackathon.Controllers
         [Authorize(AuthenticationSchemes = "admin")]
         public async Task<ActionResult> Remove(
             CancellationToken cancellationToken,
-            [FromRoute]Guid newsPostId)
+            [FromRoute] Guid newsPostId)
         {
             var newsPost = await _newsRepository.Get(newsPostId, cancellationToken);
 

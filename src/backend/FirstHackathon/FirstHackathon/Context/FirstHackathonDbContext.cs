@@ -1,9 +1,7 @@
 ﻿using FirstHackathon.Models;
 using FirstHackathon.Models.Votes;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
-using System.Threading.Tasks;
 
 namespace FirstHackathon.Context
 {
