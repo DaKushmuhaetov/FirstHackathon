@@ -64,6 +64,7 @@ namespace FirstHackathon.Controllers
                     Id = o.Id,
                     Title = o.Title,
                     Description = o.Description,
+                    CreateDate = o.CreateDate,
                     Image = o.Image
                 });
 
@@ -108,6 +109,7 @@ namespace FirstHackathon.Controllers
                 Id = post.Id,
                 Title = post.Title,
                 Description = post.Description,
+                CreateDate = post.CreateDate,
                 Image = post.Image
             });
         }
