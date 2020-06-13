@@ -4,6 +4,12 @@ import React from 'react'
 // Router
 import {withRouter} from 'react-router-dom'
 
+// Redux
+import { connect } from 'react-redux'
+
+// Context
+import {Context} from '../../context'
+
 // MaterialUI
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -28,16 +34,20 @@ import Grid from '@material-ui/core/Grid'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
+import ListSubheader from '@material-ui/core/ListSubheader'
 
 import AnnouncementIcon from '@material-ui/icons/Announcement';
 import TelegramIcon from '@material-ui/icons/Telegram';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 
 // Styles
 import './index.css'
 
 class UserPanel extends React.PureComponent {
+    static contextType = Context
+
     state = {
-        open: true
+        open: false
     }
 
     handleDrawerOpen = () => {
@@ -68,11 +78,11 @@ class UserPanel extends React.PureComponent {
                     </IconButton>
                     <HomeIcon className={classes.homeIcon}/>
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                        Наш Дом - г. Москва, ул. Ленина, д. 228
+                        Наш Дом - {this.props.data.address}
                     </Typography>
                     <IconButton color="inherit">
                         <Badge badgeContent={0} color="secondary">
-                        <NotificationsIcon />
+                            <NotificationsIcon />
                         </Badge>
                     </IconButton>
                     </Toolbar>
@@ -90,7 +100,9 @@ class UserPanel extends React.PureComponent {
                     </IconButton>
                     </div>
                     <Divider />
-                    <List>{LeftList}</List>
+                    <List>
+                        <LeftList open={open} logout={this.context.logout} name={this.props.data.name} surname={this.props.data.surname}/>
+                    </List>
                 </Drawer>
                 <main className={classes.content}>
                     <div className={classes.appBarSpacer} />
@@ -105,36 +117,54 @@ class UserPanel extends React.PureComponent {
     }
 }
 
-const LeftList = (
-    <div>
-        <ListItem button>
-            <ListItemIcon>
-                <AnnouncementIcon />
-            </ListItemIcon>
-            <ListItemText primary="Новости" />
-            </ListItem>
+const LeftList = (props) => {
+    function logout() {
+        props.logout()
+        document.location.reload(true)
+    }
+
+    return (
+        <div>
             <ListItem button>
-            <ListItemIcon>
-                <TelegramIcon />
-            </ListItemIcon>
-            <ListItemText primary="Общий чат" />
+                <ListItemIcon>
+                    <AnnouncementIcon />
+                </ListItemIcon>
+                <ListItemText primary="Новости" />
             </ListItem>
+
             <ListItem button>
-            <ListItemIcon>
-                <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Собрания" />
+                <ListItemIcon>
+                    <TelegramIcon />
+                </ListItemIcon>
+                <ListItemText primary="Общий чат" />
             </ListItem>
+
             <ListItem button>
-            <ListItemIcon>
-                <BarChartIcon />
-            </ListItemIcon>
-            <ListItemText primary="Голосования" />
+                <ListItemIcon>
+                    <PeopleIcon />
+                </ListItemIcon>
+                <ListItemText primary="Собрания" />
             </ListItem>
+
             <ListItem button>
-        </ListItem>
-    </div>
-)
+                <ListItemIcon>
+                    <BarChartIcon />
+                </ListItemIcon>
+                <ListItemText primary="Голосования" />
+            </ListItem>
+
+            <Divider style={{ marginTop: '8px' }} />
+            {props.open ? <ListSubheader style={{ marginBottom: '-12px' }} left="true">{props.name} {props.surname}</ListSubheader> : null}
+
+            <ListItem onClick={logout} button>
+                <ListItemIcon>
+                    <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Выйти" />
+            </ListItem>
+        </div>
+    )
+}
 
 const drawerWidth = 240;
 
@@ -229,4 +259,10 @@ const styles = theme => ({
     },
 })
 
-export default withRouter(withStyles(styles)(UserPanel))
+const mapStateToProps = state => {
+    return {
+        data: state.data
+    }
+}
+
+export default withRouter(withStyles(styles)(connect(mapStateToProps, null)(UserPanel)))

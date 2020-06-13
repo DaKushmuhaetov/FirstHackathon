@@ -5,6 +5,10 @@ import React from 'react'
 import {withRouter} from 'react-router-dom'
 import Routers from '../../routes'
 
+// Redux
+import { connect } from 'react-redux'
+import {updateData} from '../../redux/app'
+
 // Context
 import {Context} from '../../context'
 
@@ -44,6 +48,18 @@ class App extends React.PureComponent {
             })
 
             if (response === undefined) return
+
+            const data = this.parseJwt(this.auth.token)
+
+            const prefix = 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/'
+
+            const email = data[`${prefix}emailaddress`]
+            const name = data[`${prefix}name`]
+            const surname = data[`${prefix}surname`]
+            const id = data[`${prefix}nameidentifier`]
+            const address = data[`${prefix}streetaddress`]
+
+            this.props.updateData({ email, name, surname, id, address })
         }
     }
 
@@ -82,4 +98,8 @@ class App extends React.PureComponent {
     }
 }
 
-export default withRouter(App)
+const mapDispatchToProps = {
+    updateData
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(App))

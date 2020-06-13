@@ -18,8 +18,6 @@ export default class Auth {
     }
 
     logout() {
-        this.token = null
-
         localStorage.removeItem(storageName)
     }
 }
