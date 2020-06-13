@@ -271,7 +271,7 @@ namespace FirstHackathon.Controllers
         [ProducesResponseType(typeof(VotingView), 200)]
         [ProducesResponseType(409)]
         [Authorize(AuthenticationSchemes = "admin")]
-        public async Task<ActionResult<VotingView>> Voting(
+        public async Task<ActionResult<VotingView>> CloseVoting(
             CancellationToken cancellationToken,
             [FromQuery] Guid votingId)
         {
