@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -119,7 +118,6 @@ namespace FirstHackathon.Controllers
             )
         {
             var house = await _houseRepository.GetByAddress(User.GetAddress(), cancellationToken);
-            var houseId = await _personRepository.Get(User.GetId(), cancellationToken);
 
             var query = _context.Votings
                 .AsNoTracking()
@@ -193,6 +191,7 @@ namespace FirstHackathon.Controllers
             {
                 Id = voting.Id,
                 Title = voting.Title,
+                IsClosed = voting.IsClosed,
                 Variants = voting.Variants.Select(o => new VariantView
                 {
                     Id = o.Id,
@@ -242,6 +241,7 @@ namespace FirstHackathon.Controllers
             {
                 Id = voting.Id,
                 Title = voting.Title,
+                IsClosed = voting.IsClosed,
                 Variants = voting.Variants.Select(o => new VariantView
                 {
                     Id = o.Id,
@@ -262,14 +262,16 @@ namespace FirstHackathon.Controllers
         }
 
         /// <summary>
-        /// Voting
+        /// Close voting
         /// </summary>
-        /// <param name="votingId">Voting id for closed</param>
+        /// <param name="votingId">Voting id for closing</param>
         /// <response code="200">Successfully</response>
-        [HttpPost("/votings/closed")]
-        [ProducesResponseType(typeof(ClosedVotingView), 200)]
+        /// <response code="409">Voting already closed</response>
+        [HttpPost("/votings/close")]
+        [ProducesResponseType(typeof(VotingView), 200)]
+        [ProducesResponseType(409)]
         [Authorize(AuthenticationSchemes = "admin")]
-        public async Task<ActionResult<ClosedVotingView>> Voting(
+        public async Task<ActionResult<VotingView>> Voting(
             CancellationToken cancellationToken,
             [FromQuery] Guid votingId)
         {
@@ -278,14 +280,18 @@ namespace FirstHackathon.Controllers
             if (voting == null)
                 return NotFound(votingId);
 
-            voting.ClosedVote();
+            if (voting.IsClosed)
+                return Conflict(votingId);
+
+            voting.Close();
 
             await _votingRepository.Save(voting, cancellationToken);
 
-            return Ok(new ClosedVotingView
+            return Ok(new VotingView
             {
                 Id = voting.Id,
                 Title = voting.Title,
+                IsClosed = voting.IsClosed,
                 Variants = voting.Variants.Select(o => new VariantView
                 {
                     Id = o.Id,
@@ -301,8 +307,7 @@ namespace FirstHackathon.Controllers
                             Surname = v.Person.Surname
                         }
                     }).ToList()
-                }).ToList(),
-                IsClosed = voting.IsClosed
+                }).ToList()
             });
         }
 
