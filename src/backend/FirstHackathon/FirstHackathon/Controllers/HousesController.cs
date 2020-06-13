@@ -133,7 +133,8 @@ namespace FirstHackathon.Controllers
                 {
                     Id = o.Id,
                     Name = o.Name,
-                    Surname = o.Surname
+                    Surname = o.Surname,
+                    Login = User.IsInRole("admin") == true ? o.Login : null
                 });
 
             var items = await query
@@ -243,8 +244,7 @@ namespace FirstHackathon.Controllers
                 Id = request.Id,
                 Name = request.Name,
                 Surname = request.Surname,
-                Login = request.Login,
-                Password = request.Password
+                Login = request.Login
             });
         }
 
@@ -278,8 +278,7 @@ namespace FirstHackathon.Controllers
                     Id = person.Id,
                     Name = person.Name,
                     Surname = person.Surname,
-                    Login = person.Login,
-                    Password = person.Password
+                    Login = person.Login
                 });
             }
             catch (InvalidOperationException exception)

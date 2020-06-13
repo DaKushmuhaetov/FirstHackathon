@@ -35,6 +35,7 @@ namespace FirstHackathon.Extensions
                     new Claim(ClaimTypes.Surname, person.Surname),
                     new Claim(ClaimTypes.StreetAddress, person.House.Address),
                     new Claim(ClaimTypes.Email, person.Login),
+                    new Claim(ClaimTypes.Role, "person")
                 }, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType).Claims,
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddDays(1),
@@ -55,6 +56,7 @@ namespace FirstHackathon.Extensions
                     new Claim(ClaimTypes.NameIdentifier, house.Id.ToString()),
                     new Claim(ClaimTypes.StreetAddress, house.Address.ToString()),
                     new Claim(ClaimTypes.Email, house.Login),
+                    new Claim(ClaimTypes.Role, "admin")
                 }, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType).Claims,
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddDays(1),
