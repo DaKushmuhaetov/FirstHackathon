@@ -54,10 +54,10 @@ namespace FirstHackathon.Controllers
                 return BadRequest(address);
 
             if (await _houseRepository.GetByAddress(address, cancellationToken) != null)
-                return Conflict(address);
+                return Conflict($"Address already exists: {address}");
 
             if (await _context.Houses.SingleOrDefaultAsync(o => o.Login == binding.Login, cancellationToken) != null)
-                return Conflict(binding.Login);
+                return Conflict($"Login already exists: {binding.Login}");
 
             var house = new House(Guid.NewGuid(), address, binding.Login, binding.Password);
 

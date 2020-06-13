@@ -206,9 +206,10 @@ namespace FirstHackathon.Controllers
         /// <param name="votingId">Voting id for vote</param>
         /// <param name="variantId">Variant id for voting</param>
         /// <response code="200">Successfully</response>
+        /// <response code="400">Voting was closed</response>
         /// <response code="404">Voting or variant not found</response>
         /// <response code="409">Person already voted</response>
-        [HttpPost("/votings/{votingId}")]
+        [HttpPost("/votings/{votingId}/vote")]
         [ProducesResponseType(typeof(VotingView), 200)]
         [Authorize(AuthenticationSchemes = "person")]
         public async Task<ActionResult<VotingView>> Vote(
@@ -233,7 +234,14 @@ namespace FirstHackathon.Controllers
             if (await IsVoted(person.Id, voting.Id))
                 return Conflict("Already voted!");
 
-            voting.Vote(variant.Id, person);
+            try
+            {
+                voting.Vote(variant.Id, person);
+            }
+            catch (InvalidOperationException exception)
+            {
+                return BadRequest(exception.Message);
+            }
 
             await _votingRepository.Save(voting, cancellationToken);
 
@@ -259,6 +267,37 @@ namespace FirstHackathon.Controllers
                     }).ToList()
                 }).ToList()
             });
+        }
+
+        /// <summary>
+        /// UnVote [person]
+        /// </summary>
+        /// <param name="votingId">Voting id for unvoting</param>
+        /// <response code="204">Successfully</response>
+        /// <response code="404">Voting  not found</response>
+        /// <response code="412">Person not voted</response>
+        [HttpPost("/votings/{votingId}/unvote")]
+        [ProducesResponseType(204)]
+        [Authorize(AuthenticationSchemes = "person")]
+        public async Task<ActionResult> UnVote(
+            CancellationToken cancellationToken,
+            [FromRoute] Guid votingId)
+        {
+            var personId = User.GetId();
+            var person = await _personRepository.Get(personId, cancellationToken);
+            if (person == null)
+                return Unauthorized();
+
+            var voting = await _votingRepository.Get(votingId, cancellationToken);
+            if (voting == null)
+                return NotFound($"Voting not found: {votingId}");
+
+            if (!await IsVoted(personId, voting.Id))
+                return new StatusCodeResult(412);
+
+            await UnVote(person.Id, voting.Id);
+
+            return NoContent();
         }
 
         /// <summary>
@@ -318,6 +357,21 @@ namespace FirstHackathon.Controllers
                 .Include(o => o.Variant)
                 .Where(o => o.Person.Id == personId && o.Variant.Voting.Id == votingId).AnyAsync();
             return vote;
+        }
+
+        private async Task UnVote(Guid personId, Guid votingId)
+        {
+            var vote = await _context.Votes
+                .Include(o => o.Person)
+                .Include(o => o.Variant)
+                .Where(o => o.Person.Id == personId && o.Variant.Voting.Id == votingId).SingleOrDefaultAsync();
+
+            if (vote == null)
+                throw new InvalidOperationException($"Person vote not found");
+
+            _context.Votes.Remove(vote);
+
+            await _context.SaveChangesAsync();
         }
     }
 }

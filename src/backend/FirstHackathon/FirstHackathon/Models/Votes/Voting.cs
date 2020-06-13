@@ -36,15 +36,6 @@ namespace FirstHackathon.Models.Votes
             variant.Vote(new Votes.Vote(Guid.NewGuid(), person, variant));
         }
 
-        public void UnVote(Guid variantId, Person person)
-        {
-            if (IsClosed)
-                throw new InvalidOperationException($"IsClosed was: {IsClosed}");
-
-            var variant = Variants.SingleOrDefault(o => o.Id == variantId);
-            variant.UnVote(person.Id);
-        }
-
         public void AddVariant(Variant variant)
         {
             if (IsClosed)

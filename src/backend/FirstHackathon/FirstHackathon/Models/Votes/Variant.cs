@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FirstHackathon.Models.Votes
 {
@@ -28,11 +27,6 @@ namespace FirstHackathon.Models.Votes
                 throw new ArgumentNullException(nameof(vote));
 
             Votes.Add(vote);
-        }
-
-        public void UnVote(Guid personId)
-        {
-            Votes.Remove(Votes.SingleOrDefault(o => o.Person.Id == personId));
         }
     }
 }
