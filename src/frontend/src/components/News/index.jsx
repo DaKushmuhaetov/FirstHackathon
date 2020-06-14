@@ -1,50 +1,57 @@
 // React
 import React from 'react'
 
-import InfoCard from './Cards/Info'
+import InfoCard from '../Cards/Info'
 import Image from '../../images/gopniki.jpg'
 // MaterialUI
 import Grid from '@material-ui/core/Grid'
 import Pagination from '@material-ui/lab/Pagination';
 
 import './index.css'
+import {Context} from '../../context'
 
 
 import Http from '../../modules/http'
 
 class News extends React.PureComponent {
+    static contextType = Context
+
     constructor(props) {
         super(props) 
-        this.onChange(undefined, 1)
+        
         this.state =  {
+            total: 1,
             items: [
               ]
         }
     }
-    onChange = (e, page) => {
-        this.setState({items: [
-        {
-            id: "80067854-7ac5-4721-a153-064eadbb65ab",
-            title: "В Оренбурге завершены поиски без вести пропавшего пенсионера",
-            description: "О том, что Андрей Боженков найден, сообщили в ПСО «ОренСпас» со ссылкой на родственников.\nНакануне, 12 июня, мужчина сам вернулся домой. С ним все в порядке. Жизни и здоровью пенсионера ничто не угрожает. В причинах его ухода из дома разбираются сотрудники полиции. Проводится проверка.",
-            createDate: "0001-01-01T00:00:00",
-          },
-          {
-            id: "ceda8745-3cfe-45da-be5c-3db04bc21d30",
-            title: "В Оренбурге завершены поиски без вести пропавшего пенсионера",
-            description: "О том, что Андрей Боженков найден, сообщили в ПСО «ОренСпас» со ссылкой на родственников.\nНакануне, 12 июня, мужчина сам вернулся домой. С ним все в порядке. Жизни и здоровью пенсионера ничто не угрожает. В причинах его ухода из дома разбираются сотрудники полиции. Проводится проверка.",
-            createDate: "0001-01-01T00:00:00"
-          },
-          {
-            id: "958ec663-788f-428f-bb19-6bb57ca68d1a",
-            title: "В Оренбурге завершены поиски без вести пропавшего пенсионера",
-            description: "О том, что Андрей Боженков найден, сообщили в ПСО «ОренСпас» со ссылкой на родственников.\nНакануне, 12 июня, мужчина сам вернулся домой. С ним все в порядке. Жизни и здоровью пенсионера ничто не угрожает. В причинах его ухода из дома разбираются сотрудники полиции. Проводится проверка.",
-            createDate: "0001-01-01T00:00:00"
-          }
-        ]})
 
+    parseImage = (data) => {
+        if(data != undefined)
+            return `data:image/jpeg;base64,${data}`
+        else
+            return Image
+        
 
     }
+
+    componentDidMount() {
+        this.onChange(undefined, 1)
+    }
+
+    onChange = async (e, page) => {
+        let http = new Http(`/house/news`, 'GET', null, {'Authorization': `Bearer ${this.context.token}`})
+
+        const response = await http.request().catch((status) => {
+            console.log(status);
+            return undefined
+        })
+
+        console.log(response.items)
+        this.setState({items: response.items})
+        this.setState({total: response.total/3})
+    }
+
     render() {
         return (
             <div>
@@ -54,15 +61,15 @@ class News extends React.PureComponent {
                             <Grid key={index} item xs={12} sm={4}>
                                 <InfoCard 
                                         title={value.title}
-                                        date={value.createDate}
-                                        image={Image}
+                                        date={value.createDate.substring(0, 10) + ' ' + value.createDate.substring(11)}
+                                        image={this.parseImage(value.image)}
                                         text={value.description}
                                     />
                             </Grid>    
                         )
                     })}
                 </Grid>
-                <Pagination className='pogination' count={10} color="primary" onChange={this.onChange}/>
+                <Pagination className='pogination' count={this.state.total} color="primary" onChange={this.onChange}/>
             </div>
             
         )

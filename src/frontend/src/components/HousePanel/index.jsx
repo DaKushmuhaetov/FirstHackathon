@@ -40,6 +40,9 @@ import TelegramIcon from '@material-ui/icons/Telegram'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import AccessibilityNewIcon from '@material-ui/icons/AccessibilityNew'
 
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+import TimelineIcon from '@material-ui/icons/Timeline';
+
 // Styles
 import './index.css'
 
@@ -132,13 +135,6 @@ const LeftList = (props) => {
                 <ListItemText primary="Новости" />
             </ListItem>
 
-            <ListItem button>
-                <ListItemIcon>
-                    <TelegramIcon />
-                </ListItemIcon>
-                <ListItemText primary="Общий чат" />
-            </ListItem>
-
             <ListItem  onClick={() => props.history.push('/meetings')} button>
                 <ListItemIcon>
                     <PeopleIcon />
@@ -152,8 +148,29 @@ const LeftList = (props) => {
                 </ListItemIcon>
                 <ListItemText primary="Голосования" />
             </ListItem>
+            
+            <ListItem onClick={() => props.history.push('/payments')} button>
+                <ListItemIcon>
+                    <AccountBalanceWalletIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Оплата услуг" />
+            </ListItem>
 
-            <ListItem button>
+            <ListItem onClick={() => props.history.push('/chat')} button>
+                <ListItemIcon>
+                    <TelegramIcon />
+                </ListItemIcon>
+                <ListItemText primary="Общий чат" />
+            </ListItem>
+
+            <ListItem onClick={() => props.history.push('/tasks')} button>
+                <ListItemIcon>
+                    <TimelineIcon />
+                </ListItemIcon>
+                <ListItemText primary="Исполнение задач" />
+            </ListItem>
+
+            <ListItem onClick={() => props.history.push('/users')} button>
                 <ListItemIcon>
                     <AccessibilityNewIcon />
                 </ListItemIcon>

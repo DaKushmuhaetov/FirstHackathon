@@ -89,6 +89,16 @@ a {
     }
 }
 
+.tab-h4 {
+    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: #999 !important;
+}
+
 @media (max-height: 630px) {
     .auth {
         top: 60%;

@@ -29,7 +29,7 @@ class Main extends React.PureComponent {
                         </Typography>
 
                         <Typography variant="h5" gutterBottom className="main-description">
-                            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iusto nisi deleniti quod quos adipisci, animi dolore vitae quidem dolorem harum molestias sint eligendi obcaecati fugiat provident porro, vel consectetur minima?
+                            Инновационный сервис для обеспечения управления многоквартирным домом, а также повышения коммуникации между жильцами и выполнения их нужд.
                         </Typography>
 
                         <Button

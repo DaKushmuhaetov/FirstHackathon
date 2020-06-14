@@ -20,6 +20,9 @@ import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import HomeIcon from '@material-ui/icons/Home'
 
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
+import TimelineIcon from '@material-ui/icons/Timeline';
+
 import clsx from 'clsx';
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Drawer from '@material-ui/core/Drawer'
@@ -131,13 +134,6 @@ const LeftList = (props) => {
                 <ListItemText primary="Новости" />
             </ListItem>
 
-            <ListItem button>
-                <ListItemIcon>
-                    <TelegramIcon />
-                </ListItemIcon>
-                <ListItemText primary="Общий чат" />
-            </ListItem>
-
             <ListItem  onClick={() => props.history.push('/meetings')} button>
                 <ListItemIcon>
                     <PeopleIcon />
@@ -150,6 +146,27 @@ const LeftList = (props) => {
                     <BarChartIcon />
                 </ListItemIcon>
                 <ListItemText primary="Голосования" />
+            </ListItem>
+
+            <ListItem onClick={() => props.history.push('/payments')} button>
+                <ListItemIcon>
+                    <AccountBalanceWalletIcon/>
+                </ListItemIcon>
+                <ListItemText primary="Оплата услуг" />
+            </ListItem>
+
+            <ListItem onClick={() => props.history.push('/chat')} button>
+                <ListItemIcon>
+                    <TelegramIcon />
+                </ListItemIcon>
+                <ListItemText primary="Общий чат" />
+            </ListItem>
+
+            <ListItem onClick={() => props.history.push('/tasks')} button>
+                <ListItemIcon>
+                    <TimelineIcon />
+                </ListItemIcon>
+                <ListItemText primary="Исполнение задач" />
             </ListItem>
 
             <Divider style={{ marginTop: '8px' }} />

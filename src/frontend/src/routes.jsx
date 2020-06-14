@@ -13,6 +13,8 @@ import HouseRegistration from './components/HouseRegistration'
 import Meetings from './components/Meetings'
 import Votings from './components/Votings'
 import News from './components/News'
+import UserList from './components/UserList'
+import InDevelopment from './components/InDevelopment'
 
 // Context
 import {Context} from './context'
@@ -50,6 +52,30 @@ class Routers extends React.PureComponent {
                             path={'/votings'}
                             render={() => <HousePanel><Votings/></HousePanel>}
                         />
+
+                        <Route
+                            exact
+                            path={'/chat'}
+                            render={() => <HousePanel><InDevelopment/></HousePanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/tasks'}
+                            render={() => <HousePanel><InDevelopment/></HousePanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/payments'}
+                            render={() => <HousePanel><InDevelopment/></HousePanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/users'}
+                            render={() => <HousePanel><UserList/></HousePanel>}
+                        />
     
                         <Redirect to={'/'}/>
                     </Switch>
@@ -78,6 +104,24 @@ class Routers extends React.PureComponent {
                             exact
                             path={'/votings'}
                             render={() => <UserPanel><Votings/></UserPanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/chat'}
+                            render={() => <UserPanel><InDevelopment/></UserPanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/tasks'}
+                            render={() => <UserPanel><InDevelopment/></UserPanel>}
+                        />
+
+                        <Route
+                            exact
+                            path={'/payments'}
+                            render={() => <UserPanel><InDevelopment/></UserPanel>}
                         />
     
                         <Redirect to={'/'}/>
