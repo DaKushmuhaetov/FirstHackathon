@@ -1,5 +1,5 @@
 // React
-import React from 'react'
+import React, {Fragment} from 'react'
 
 // MaterialUI
 import Grid from '@material-ui/core/Grid'
@@ -11,15 +11,21 @@ import VotingCard from '../Cards/Voting/'
 
 import {Context} from '../../context'
 
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button';
+
+import './index.css'
+
 class Votings extends React.PureComponent {
     static contextType = Context
 
     constructor(props) {
         super(props) 
- 
         this.state =  {
             items: [
-              ]
+              ],
+            aVariantTotal: 1,
+            aVariantList: []
         }
     }
     componentDidMount() {
@@ -41,24 +47,43 @@ class Votings extends React.PureComponent {
  
         this.setState({items: response.items})
     }
+    addVariant = () => {
+        this.state.aVariantList.push(`ref${this.state.aVariantTotal+1}`)
+    }
     render() {
-        console.log('')
         return (
-            <Grid container spacing={3}>            
-                {this.state.items.map((value, index) => {
-                        return(
-                            <Grid key={index} item xs={12} sm={4}>
-                                <VotingCard 
-                                        votingID={value.id}
-                                        title={value.title}
-                                        date="14.06.2020"
-                                        image={Image}
-                                        variants={value.variants}
-                                    />
-                            </Grid>    
-                        )
-                    })}
-            </Grid>
+            <Fragment>
+                {!this.context.isAdmin() ? (
+                    <Grid container spacing={3}>            
+                        {this.state.items.map((value, index) => {
+                                return(
+                                    <Grid key={index} item xs={12} sm={4}>
+                                        <VotingCard 
+                                                votingID={value.id}
+                                                title={value.title}
+                                                date="14.06.2020"
+                                                image={Image}
+                                                variants={value.variants}
+                                            />
+                                    </Grid>    
+                                )
+                            })}
+                    </Grid>
+                ) : null}
+
+                {this.context.isAdmin() ? (
+                    <form className="el-center el-form" noValidate autoComplete="off">
+                        <TextField className="el-textField" id="outlined-basic" fullWidth label="Название голосования" variant="outlined" />
+                        {this.state.aVariantList.map((value, index) => {
+                            return (
+                                <TextField ref={value} className="el-textField" id="outlined-basic" fullWidth label={`Вариант ${index}`} variant="outlined" />
+                            )
+                        })}
+                        <Button style={{ marginTop: '25px' }} variant="contained">Добавить вариант</Button>
+                        <Button style={{ marginTop: '25px' }} variant="contained" color="primary">Создать</Button>
+                    </form>
+                ) : null}
+            </Fragment>
         )
     }
 }

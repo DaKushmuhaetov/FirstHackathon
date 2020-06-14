@@ -27,7 +27,7 @@ class PartyCard extends React.Component {
                 </CardContent>
             <CardActions>
                 <Button size="small" color="primary"onClick={handler}>
-                Перейдти
+                Перейти
                 </Button>
                 
             </CardActions>

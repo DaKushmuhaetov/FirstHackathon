@@ -99,6 +99,19 @@ a {
     color: #999 !important;
 }
 
+.el-center {
+    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.el-form {
+    align-items: unset;
+    flex-direction: column;
+}
+
 @media (max-height: 630px) {
     .auth {
         top: 60%;

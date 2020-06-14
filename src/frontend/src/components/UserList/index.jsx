@@ -44,23 +44,23 @@ class UserList extends React.PureComponent {
         return (
             <Fragment>
                 {this.state.requests.length > 0 ? (
-                <Grid container spacing={3}>
-                    {this.state.requests.map((value, index) => {
-                            return(
-                                <Grid key={index} item xs={12} sm={4}>
-                                    <ConfirmationNewUserCard
-                                        username={value.name + ' ' + value.surname}
-                                        address={value.address}
-                                        email={value.login}
+                    <Grid container spacing={3}>
+                        {this.state.requests.map((value, index) => {
+                                return(
+                                    <Grid key={index} item xs={12} sm={4}>
+                                        <ConfirmationNewUserCard
+                                            username={value.name + ' ' + value.surname}
+                                            address={value.address}
+                                            email={value.login}
 
-                                        id={value.id}
-                                        index={index}
-                                        hide={this.hide}
-                                    />
-                                </Grid>    
-                            )
-                    })}
-                </Grid>
+                                            id={value.id}
+                                            index={index}
+                                            hide={this.hide}
+                                        />
+                                    </Grid>    
+                                )
+                        })}
+                    </Grid>
                 ) : null}
 
                 {this.state.requests.length <= 0 ? (

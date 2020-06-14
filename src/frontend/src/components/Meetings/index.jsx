@@ -1,6 +1,8 @@
 // React
-import React from 'react'
+import React, {Fragment} from 'react'
 
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button';
 // MaterialUI
 import Grid from '@material-ui/core/Grid'
 
@@ -37,6 +39,8 @@ class Meetings extends React.PureComponent {
     }
     render() {
         return (
+            <Fragment>                
+            {!this.context.isAdmin() ? (
             <Grid container spacing={3}>            
                 {this.state.items.map((value, index) => {
                         return(
@@ -50,6 +54,16 @@ class Meetings extends React.PureComponent {
                         )
                     })}
             </Grid>
+            ) : null}
+            {this.context.isAdmin() ? (
+                    <form className="el-center el-form" noValidate autoComplete="off">
+                        <TextField style={{marginBottom: 20}} className="el-textField" id="outlined-basic" fullWidth label="Название мероприятия" variant="outlined" />
+                        <TextField className="el-textField" id="outlined-multiline-flexible" multiline
+                            rows={5} fullWidth label="описание мероприятия" variant="outlined" />
+                        <Button style={{ marginTop: '25px' }} variant="contained" color="primary">Создать</Button>
+                    </form>
+                ) : null}    
+            </Fragment>                
         )
     }
 }

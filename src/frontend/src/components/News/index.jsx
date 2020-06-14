@@ -1,5 +1,5 @@
 // React
-import React from 'react'
+import React, {Fragment} from 'react'
 
 import InfoCard from '../Cards/Info'
 import Image from '../../images/gopniki.jpg'
@@ -10,6 +10,8 @@ import Pagination from '@material-ui/lab/Pagination';
 import './index.css'
 import {Context} from '../../context'
 
+import TextField from '@material-ui/core/TextField'
+import Button from '@material-ui/core/Button';
 
 import Http from '../../modules/http'
 
@@ -54,8 +56,10 @@ class News extends React.PureComponent {
 
     render() {
         return (
-            <div>
-                <Grid container spacing={3}>   
+            <Fragment>                
+                {!this.context.isAdmin() ? (
+                <div>
+                    <Grid container spacing={3}>   
                     {this.state.items.map((value, index) => {
                         return(
                             <Grid key={index} item xs={12} sm={4}>
@@ -68,9 +72,20 @@ class News extends React.PureComponent {
                             </Grid>    
                         )
                     })}
-                </Grid>
-                <Pagination className='pogination' count={this.state.total} color="primary" onChange={this.onChange}/>
-            </div>
+                    </Grid>
+                    <Pagination className='pogination' count={this.state.total} color="primary" onChange={this.onChange}/>
+                </div>
+                
+                ): null}
+                {this.context.isAdmin() ? (
+                    <form className="el-center el-form" noValidate autoComplete="off">
+                        <TextField style={{marginBottom: 20}} className="el-textField" id="outlined-basic" fullWidth label="Название новости" variant="outlined" />
+                        <TextField className="el-textField" id="outlined-multiline-flexible" multiline
+                            rows={5} fullWidth label="описание новости" variant="outlined" />
+                        <Button style={{ marginTop: '25px' }} variant="contained" color="primary">Создать</Button>
+                    </form>
+                ) : null}
+            </Fragment>
             
         )
     }
