@@ -11,15 +11,17 @@ public class URLs {
     private static final String SLASH = "/";
     private static final String HOUSE = "/house";
     private static final String PERSON = "/person";
+    private static final String LOGIN = "/login";
     private static String houseID;
 
     public static String getHousesURL() {
         return SERVER_URL+HOUSES;
     }
     public static String getRegistrationURL() {
-        String url = SERVER_URL+HOUSE+houseID+PERSON;
-        Log.d("Returned URL", url);
-        return url;
+        return SERVER_URL+HOUSE+houseID+PERSON;
+    }
+    public static String getLoginURL() {
+        return SERVER_URL+PERSON+LOGIN;
     }
 
 

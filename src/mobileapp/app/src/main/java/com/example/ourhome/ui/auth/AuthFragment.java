@@ -25,23 +25,29 @@ public class AuthFragment extends Fragment {
 
         loginFragment = new LoginFragment(this);
         registerFragment = new RegisterFragment(this);
+        adminLoginFragment = new AdminLoginFragment(this);
         setLogin();
 
         return root;
     }
     private LoginFragment loginFragment;
     private RegisterFragment registerFragment;
+    private AdminLoginFragment adminLoginFragment;
 
     public void setLogin() {
-        System.out.println("AuthCrated");
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.authContainer, loginFragment);
-        transaction.commit();
+        changeFragment(loginFragment);
+
     }
     public void setRegister() {
+        changeFragment(registerFragment);
+
+    }
+    public void setAdminLogin() {
+        changeFragment(adminLoginFragment);
+    }
+    public void changeFragment(Fragment fragment) {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.remove(loginFragment);
-        transaction.add(R.id.authContainer, registerFragment);
+        transaction.replace(R.id.authContainer, fragment);
         transaction.commit();
     }
 

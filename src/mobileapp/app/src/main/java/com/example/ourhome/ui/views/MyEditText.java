@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
+import android.text.method.TransformationMethod;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -42,6 +46,7 @@ public class MyEditText extends CustomView{
     View root;
     TextView name, error;
     TextView text;
+    EditText textET;
     FrameLayout frame;
 
     @Override
@@ -49,6 +54,7 @@ public class MyEditText extends CustomView{
         root = inflate(getContext(), R.layout.view_edit_text, this);
         text = findViewById(R.id.text);
         name = root.findViewById(R.id.name);
+        textET = root.findViewById(R.id.text);
         error = root.findViewById(R.id.error);
         error.setVisibility(View.INVISIBLE);
         frame = root.findViewById(R.id.frame);
@@ -76,7 +82,12 @@ public class MyEditText extends CustomView{
         });
     }
 
-
+    public void setInputType(int type) {
+        textET.setInputType(type);
+    }
+    public void setInputType(TransformationMethod method) {
+        textET.setTransformationMethod(method);
+    }
     protected void setState(State state) {
         this.state=state;
         switch (state) {

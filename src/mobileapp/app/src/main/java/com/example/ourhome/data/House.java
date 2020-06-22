@@ -3,7 +3,9 @@ package com.example.ourhome.data;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class House {
+import java.io.Serializable;
+
+public class House implements Serializable {
     String guid, address;
     int peopleCount;
 

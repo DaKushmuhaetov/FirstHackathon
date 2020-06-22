@@ -2,6 +2,7 @@ package com.example.ourhome.ui.auth;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.ourhome.LoadActivity;
 import com.example.ourhome.R;
 import com.example.ourhome.ui.util.ProgressBarFragment;
 import com.example.ourhome.ui.views.MyEditText;
@@ -58,6 +60,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         root = inflater.inflate(R.layout.fragment_register, container, false);
         ButterKnife.bind(this, root);
+        password.setInputType(PasswordTransformationMethod.getInstance());
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +80,8 @@ public class RegisterFragment extends Fragment {
                 if(!checkToValidate()) return;
 
                 String url = URLs.getRegistrationURL();
-                final ProgressBarFragment fragment = new ProgressBarFragment();
+                final ProgressBarFragment fragment = ProgressBarFragment.splashLoad(getActivity(),
+                        R.id.parent);
                 final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
                 final JSONObject data = new JSONObject();
@@ -97,25 +101,19 @@ public class RegisterFragment extends Fragment {
                             @Override
                             public void onResponse(JSONObject response) {
 
-                                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                                transaction.remove(fragment);
-                                transaction.commit();
+                                fragment.remove();
                                 Toasty.success(getContext(), "Ваш запрос отправлен на обработку").show();
                             }
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        FragmentTransaction transaction = fragmentManager.beginTransaction();
-                        transaction.remove(fragment);
-                        transaction.commit();
+                        fragment.remove();
                         Toasty.error(getContext(), "Нет соединения с сервером").show();
                     }
                 });
                 queue.add(request);
 
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.add(R.id.parent, fragment);
-                transaction.commit();
+
             }
         });
 
@@ -126,17 +124,11 @@ public class RegisterFragment extends Fragment {
     private boolean checkToValidate() {
         boolean isValidate = true;
         MyEditText[] fields = new MyEditText[] {name, email, password};
-        for(MyEditText field : fields) {
-            if(field.getText().isEmpty()) {
-                field.setErrorMessage("Пусто");
-                alertErrorMessage("Не все поля заполнены", isValidate);
-                isValidate = false;
-            }
-            else {
-                field.allRight();
-                isValidate = true;
-            }
+        if(!((LoadActivity) getActivity()).checkToVoid(fields)) {
+            alertErrorMessage("Не все поля заполнены", false);
+            isValidate = false;
         }
+
         if(changeHouse.getText().equals("Выбрать дом")) {
             alertErrorMessage("Выберите дом", isValidate);
             changeHouse.setTextColor(Color.RED);
